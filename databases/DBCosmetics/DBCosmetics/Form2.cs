@@ -25,6 +25,7 @@ namespace DBCosmetics
         string sqlCollections = "SELECT * FROM Collections";
         SqlDataAdapter adapter;
         DataSet ds;
+
         public Form2()
         {
             InitializeComponent();
@@ -32,20 +33,49 @@ namespace DBCosmetics
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-
+                //color
                 adapter = new SqlDataAdapter(sqlColors, connection);
-                DataSet ds = new DataSet();
+                ds = new DataSet();
                 adapter.Fill(ds, "Color");
                 comboBox1.DisplayMember = "Name";
                 comboBox1.ValueMember = "Id";
                 comboBox1.DataSource = ds.Tables["Color"];
 
+                comboBoxColor.DisplayMember = "Name";
+                comboBoxColor.ValueMember = "Id";
+                comboBoxColor.DataSource = ds.Tables["Color"];
+
+                //collection
+                adapter = new SqlDataAdapter(sqlCollections, connection);
+                ds = new DataSet();
+                adapter.Fill(ds, "Collection");
+                comboBoxCollection.DisplayMember = "Name";
+                comboBoxCollection.ValueMember = "Id";
+                comboBoxCollection.DataSource = ds.Tables["Collection"];
+
+                //finish
+                adapter = new SqlDataAdapter(sqlFinishes, connection);
+                ds = new DataSet();
+                adapter.Fill(ds, "Finish");
+                comboBoxFinish.DisplayMember = "Name";
+                comboBoxFinish.ValueMember = "Id";
+                comboBoxFinish.DataSource = ds.Tables["Finish"];
+
+                //types
+                adapter = new SqlDataAdapter(sqlCosmTypes, connection);
+                ds = new DataSet();
+                adapter.Fill(ds, "CosmType");
+                comboBoxType.DisplayMember = "Name";
+                comboBoxType.ValueMember = "Id";
+                comboBoxType.DataSource = ds.Tables["CosmType"];
+
+                //store
                 adapter = new SqlDataAdapter(sqlStores, connection);
                 ds = new DataSet();
                 adapter.Fill(ds, "Store");
-                comboBox1.DisplayMember = "Name";
-                comboBox1.ValueMember = "Id";
-                comboBox1.DataSource = ds.Tables["Store"];
+                comboBox2.DisplayMember = "Name";
+                comboBox2.ValueMember = "Id";
+                comboBox2.DataSource = ds.Tables["Store"];
             }
         }
 
@@ -56,23 +86,34 @@ namespace DBCosmetics
 
         private void buttonRequest1_Click(object sender, EventArgs e)
         {
+           
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                string sql = "SELECT * FROM Products WHERE Products.ColorId == @";
-                adapter = new SqlDataAdapter(sqlColors, connection);
+                string sql = String.Format("SELECT * FROM Products INNER JOIN Colors on Products.ColorId=Colors.Id WHERE Colors.Name={0}", comboBox1.Text);
+                adapter = new SqlDataAdapter(sql, connection);
                 DataSet ds = new DataSet();
-                adapter.Fill(ds, "Color");
-                comboBox1.DisplayMember = "Name";
-                comboBox1.ValueMember = "Id";
-                comboBox1.DataSource = ds.Tables["Color"];
+                adapter.Fill(ds);
+                dataGridView1.DataSource = ds.Tables[0];
 
-                adapter = new SqlDataAdapter(sqlStores, connection);
-                ds = new DataSet();
-                adapter.Fill(ds, "Store");
-                comboBox1.DisplayMember = "Name";
-                comboBox1.ValueMember = "Id";
-                comboBox1.DataSource = ds.Tables["Store"];
+            }
+        }
+
+        private void buttonRequest2_Click(object sender, EventArgs e)
+        {
+            
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                string sql = String.Format("SELECT * FROM Products WHERE ColorId={0} and CosmTypeId={1} and CollectionId={2} and FinishId={3}", comboBoxColor.ValueMember.ToString(), comboBoxType.ValueMember, comboBoxCollection.ValueMember.ToString(), comboBoxFinish.ValueMember.ToString());
+                adapter = new SqlDataAdapter(sql, connection);
+                DataSet ds = new DataSet();
+                adapter.Fill(ds);
+                dataGridView1.DataSource = ds.Tables[0];
+                //SqlCommand command = new SqlCommand(sql, connection);
+
+                //dataGridView1.DataSource = command.ExecuteReader();
+
             }
         }
     }
