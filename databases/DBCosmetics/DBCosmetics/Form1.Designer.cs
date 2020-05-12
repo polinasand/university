@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
             this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -72,6 +73,8 @@
             // 
             // dataGridView1
             // 
+            this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Location = new System.Drawing.Point(6, 6);
             this.dataGridView1.Name = "dataGridView1";
@@ -82,6 +85,7 @@
             // 
             // dataGridView2
             // 
+            this.dataGridView2.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView2.Location = new System.Drawing.Point(0, 0);
             this.dataGridView2.Name = "dataGridView2";
@@ -101,19 +105,20 @@
             this.tabControl1.Controls.Add(this.Type);
             this.tabControl1.Controls.Add(this.Collection);
             this.tabControl1.Controls.Add(this.Color);
+            this.tabControl1.Font = new System.Drawing.Font("Californian FB", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabControl1.Location = new System.Drawing.Point(26, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(555, 495);
+            this.tabControl1.Size = new System.Drawing.Size(555, 422);
             this.tabControl1.TabIndex = 2;
             // 
             // Product
             // 
             this.Product.Controls.Add(this.dataGridView1);
-            this.Product.Location = new System.Drawing.Point(4, 25);
+            this.Product.Location = new System.Drawing.Point(4, 30);
             this.Product.Name = "Product";
             this.Product.Padding = new System.Windows.Forms.Padding(3);
-            this.Product.Size = new System.Drawing.Size(547, 466);
+            this.Product.Size = new System.Drawing.Size(547, 388);
             this.Product.TabIndex = 0;
             this.Product.Text = "Product";
             this.Product.UseVisualStyleBackColor = true;
@@ -121,9 +126,9 @@
             // Finish
             // 
             this.Finish.Controls.Add(this.dataGridView2);
-            this.Finish.Location = new System.Drawing.Point(4, 25);
+            this.Finish.Location = new System.Drawing.Point(4, 30);
             this.Finish.Name = "Finish";
-            this.Finish.Size = new System.Drawing.Size(547, 466);
+            this.Finish.Size = new System.Drawing.Size(547, 388);
             this.Finish.TabIndex = 8;
             this.Finish.Text = "Finish";
             this.Finish.UseVisualStyleBackColor = true;
@@ -131,16 +136,17 @@
             // Store
             // 
             this.Store.Controls.Add(this.dataGridView3);
-            this.Store.Location = new System.Drawing.Point(4, 25);
+            this.Store.Location = new System.Drawing.Point(4, 30);
             this.Store.Name = "Store";
             this.Store.Padding = new System.Windows.Forms.Padding(3);
-            this.Store.Size = new System.Drawing.Size(547, 466);
+            this.Store.Size = new System.Drawing.Size(547, 388);
             this.Store.TabIndex = 1;
             this.Store.Text = "Store";
             this.Store.UseVisualStyleBackColor = true;
             // 
             // dataGridView3
             // 
+            this.dataGridView3.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
             this.dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView3.Location = new System.Drawing.Point(6, 7);
             this.dataGridView3.Name = "dataGridView3";
@@ -152,15 +158,16 @@
             // Stock
             // 
             this.Stock.Controls.Add(this.dataGridView4);
-            this.Stock.Location = new System.Drawing.Point(4, 25);
+            this.Stock.Location = new System.Drawing.Point(4, 30);
             this.Stock.Name = "Stock";
-            this.Stock.Size = new System.Drawing.Size(547, 466);
+            this.Stock.Size = new System.Drawing.Size(547, 388);
             this.Stock.TabIndex = 2;
             this.Stock.Text = "Stock";
             this.Stock.UseVisualStyleBackColor = true;
             // 
             // dataGridView4
             // 
+            this.dataGridView4.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
             this.dataGridView4.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView4.Location = new System.Drawing.Point(3, 3);
             this.dataGridView4.Name = "dataGridView4";
@@ -172,15 +179,16 @@
             // Worker
             // 
             this.Worker.Controls.Add(this.dataGridView5);
-            this.Worker.Location = new System.Drawing.Point(4, 25);
+            this.Worker.Location = new System.Drawing.Point(4, 30);
             this.Worker.Name = "Worker";
-            this.Worker.Size = new System.Drawing.Size(547, 466);
+            this.Worker.Size = new System.Drawing.Size(547, 388);
             this.Worker.TabIndex = 3;
             this.Worker.Text = "Worker";
             this.Worker.UseVisualStyleBackColor = true;
             // 
             // dataGridView5
             // 
+            this.dataGridView5.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
             this.dataGridView5.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView5.Location = new System.Drawing.Point(4, 0);
             this.dataGridView5.Name = "dataGridView5";
@@ -192,15 +200,16 @@
             // Position
             // 
             this.Position.Controls.Add(this.dataGridView6);
-            this.Position.Location = new System.Drawing.Point(4, 25);
+            this.Position.Location = new System.Drawing.Point(4, 30);
             this.Position.Name = "Position";
-            this.Position.Size = new System.Drawing.Size(547, 466);
+            this.Position.Size = new System.Drawing.Size(547, 388);
             this.Position.TabIndex = 4;
             this.Position.Text = "Position";
             this.Position.UseVisualStyleBackColor = true;
             // 
             // dataGridView6
             // 
+            this.dataGridView6.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
             this.dataGridView6.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView6.Location = new System.Drawing.Point(3, 0);
             this.dataGridView6.Name = "dataGridView6";
@@ -212,15 +221,16 @@
             // Type
             // 
             this.Type.Controls.Add(this.dataGridView7);
-            this.Type.Location = new System.Drawing.Point(4, 25);
+            this.Type.Location = new System.Drawing.Point(4, 30);
             this.Type.Name = "Type";
-            this.Type.Size = new System.Drawing.Size(547, 466);
+            this.Type.Size = new System.Drawing.Size(547, 388);
             this.Type.TabIndex = 5;
             this.Type.Text = "Type";
             this.Type.UseVisualStyleBackColor = true;
             // 
             // dataGridView7
             // 
+            this.dataGridView7.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
             this.dataGridView7.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView7.Location = new System.Drawing.Point(3, 3);
             this.dataGridView7.Name = "dataGridView7";
@@ -232,15 +242,16 @@
             // Collection
             // 
             this.Collection.Controls.Add(this.dataGridView8);
-            this.Collection.Location = new System.Drawing.Point(4, 25);
+            this.Collection.Location = new System.Drawing.Point(4, 30);
             this.Collection.Name = "Collection";
-            this.Collection.Size = new System.Drawing.Size(547, 466);
+            this.Collection.Size = new System.Drawing.Size(547, 388);
             this.Collection.TabIndex = 6;
             this.Collection.Text = "Collection";
             this.Collection.UseVisualStyleBackColor = true;
             // 
             // dataGridView8
             // 
+            this.dataGridView8.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
             this.dataGridView8.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView8.Location = new System.Drawing.Point(3, 0);
             this.dataGridView8.Name = "dataGridView8";
@@ -252,15 +263,16 @@
             // Color
             // 
             this.Color.Controls.Add(this.dataGridView9);
-            this.Color.Location = new System.Drawing.Point(4, 25);
+            this.Color.Location = new System.Drawing.Point(4, 30);
             this.Color.Name = "Color";
-            this.Color.Size = new System.Drawing.Size(547, 466);
+            this.Color.Size = new System.Drawing.Size(547, 388);
             this.Color.TabIndex = 7;
             this.Color.Text = "Color";
             this.Color.UseVisualStyleBackColor = true;
             // 
             // dataGridView9
             // 
+            this.dataGridView9.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
             this.dataGridView9.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView9.Location = new System.Drawing.Point(3, 3);
             this.dataGridView9.Name = "dataGridView9";
@@ -271,29 +283,39 @@
             // 
             // buttonDelete
             // 
-            this.buttonDelete.Location = new System.Drawing.Point(614, 162);
+            this.buttonDelete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
+            this.buttonDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonDelete.Font = new System.Drawing.Font("Lucida Bright", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonDelete.ForeColor = System.Drawing.Color.White;
+            this.buttonDelete.Location = new System.Drawing.Point(654, 147);
+            this.buttonDelete.Margin = new System.Windows.Forms.Padding(0);
             this.buttonDelete.Name = "buttonDelete";
-            this.buttonDelete.Size = new System.Drawing.Size(87, 47);
+            this.buttonDelete.Size = new System.Drawing.Size(113, 74);
             this.buttonDelete.TabIndex = 1;
             this.buttonDelete.Text = "Delete";
-            this.buttonDelete.UseVisualStyleBackColor = true;
+            this.buttonDelete.UseVisualStyleBackColor = false;
             this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
             // 
             // buttonSave
             // 
-            this.buttonSave.Location = new System.Drawing.Point(624, 271);
+            this.buttonSave.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
+            this.buttonSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonSave.Font = new System.Drawing.Font("Lucida Bright", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonSave.ForeColor = System.Drawing.Color.White;
+            this.buttonSave.Location = new System.Drawing.Point(654, 268);
             this.buttonSave.Name = "buttonSave";
-            this.buttonSave.Size = new System.Drawing.Size(89, 47);
+            this.buttonSave.Size = new System.Drawing.Size(113, 77);
             this.buttonSave.TabIndex = 2;
             this.buttonSave.Text = "Save";
-            this.buttonSave.UseVisualStyleBackColor = true;
+            this.buttonSave.UseVisualStyleBackColor = false;
             this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 512);
+            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
+            this.ClientSize = new System.Drawing.Size(853, 512);
             this.Controls.Add(this.buttonSave);
             this.Controls.Add(this.buttonDelete);
             this.Controls.Add(this.tabControl1);

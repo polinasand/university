@@ -45,11 +45,21 @@ namespace DBCosmetics
         
         SqlCommandBuilder commandBuilder;
         SqlParameter parameter;
+        
         public Form1()
         {
             InitializeComponent();
-
+            dataGridView1.DataError += new DataGridViewDataErrorEventHandler(dataGridView1_DataError);
+            dataGridView2.DataError += new DataGridViewDataErrorEventHandler(dataGridView2_DataError);
+            dataGridView3.DataError += new DataGridViewDataErrorEventHandler(dataGridView3_DataError);
+            dataGridView4.DataError += new DataGridViewDataErrorEventHandler(dataGridView4_DataError);
+            dataGridView5.DataError += new DataGridViewDataErrorEventHandler(dataGridView5_DataError);
+            dataGridView6.DataError += new DataGridViewDataErrorEventHandler(dataGridView6_DataError);
+            dataGridView7.DataError += new DataGridViewDataErrorEventHandler(dataGridView7_DataError);
+            dataGridView8.DataError += new DataGridViewDataErrorEventHandler(dataGridView8_DataError);
+            dataGridView9.DataError += new DataGridViewDataErrorEventHandler(dataGridView9_DataError);
             
+
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -118,8 +128,9 @@ namespace DBCosmetics
 
                 
             }
+            
         }
-
+        
         private void Form1_Load(object sender, EventArgs e)
         {
 
@@ -164,7 +175,7 @@ namespace DBCosmetics
             {
                 dataGridView9.Rows.Remove(row);
             }
-
+            MessageBox.Show("Click 'Save' to save changes", "Save");
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
@@ -180,18 +191,24 @@ namespace DBCosmetics
                     "(Price, Quantity, CollectionId, CosmTypeId, FinishId, ColorId)" +
                     "  VALUES (@price, @quantity, @collectionId, @cosmTypeId, @finishId, @colorId) SET @Id=SCOPE_IDENTITY()",
                 connection);
-                
-                adapterProducts.InsertCommand.Parameters.Add(new SqlParameter("@price", SqlDbType.Int, 0, "Price"));
-                adapterProducts.InsertCommand.Parameters.Add(new SqlParameter("@quantity", SqlDbType.Int, 12, "Quantity"));
-                adapterProducts.InsertCommand.Parameters.Add(new SqlParameter("@collectionId", SqlDbType.Int, 0, "CollectionId"));
-                adapterProducts.InsertCommand.Parameters.Add(new SqlParameter("@finishId", SqlDbType.Int, 0, "FinishId"));
-                adapterProducts.InsertCommand.Parameters.Add(new SqlParameter("@colorId", SqlDbType.Int, 0, "ColorId"));
-                adapterProducts.InsertCommand.Parameters.Add(new SqlParameter("@cosmTypeId", SqlDbType.Int, 0, "CosmTypeId"));
+                try
+                {
+                    adapterProducts.InsertCommand.Parameters.Add(new SqlParameter("@price", SqlDbType.Int, 0, "Price"));
+                    adapterProducts.InsertCommand.Parameters.Add(new SqlParameter("@quantity", SqlDbType.Int, 12, "Quantity"));
+                    adapterProducts.InsertCommand.Parameters.Add(new SqlParameter("@collectionId", SqlDbType.Int, 0, "CollectionId"));
+                    adapterProducts.InsertCommand.Parameters.Add(new SqlParameter("@finishId", SqlDbType.Int, 0, "FinishId"));
+                    adapterProducts.InsertCommand.Parameters.Add(new SqlParameter("@colorId", SqlDbType.Int, 0, "ColorId"));
+                    adapterProducts.InsertCommand.Parameters.Add(new SqlParameter("@cosmTypeId", SqlDbType.Int, 0, "CosmTypeId"));
 
-                parameter = adapterProducts.InsertCommand.Parameters.Add("@Id", SqlDbType.Int, 0, "Id");
-                parameter.Direction = ParameterDirection.Output;
+                    parameter = adapterProducts.InsertCommand.Parameters.Add("@Id", SqlDbType.Int, 0, "Id");
+                    parameter.Direction = ParameterDirection.Output;
 
-                adapterProducts.Update(ds1);
+                    adapterProducts.Update(ds1);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Bad index/wrong input. Changes won't be saved.", "Wrong input");
+                }
 
                 //finish
                 adapterFinishes = new SqlDataAdapter(sqlFinishes, connection);
@@ -203,124 +220,233 @@ namespace DBCosmetics
                 connection);
 
                 adapterFinishes.InsertCommand.Parameters.Add(new SqlParameter("@name", SqlDbType.VarChar, 50, "Name"));
-             
-                parameter = adapterFinishes.InsertCommand.Parameters.Add("@Id", SqlDbType.Int, 0, "Id");
-                parameter.Direction = ParameterDirection.Output;
-
-                adapterFinishes.Update(ds2);
+                try
+                {
+                    parameter = adapterFinishes.InsertCommand.Parameters.Add("@Id", SqlDbType.Int, 0, "Id");
+                    parameter.Direction = ParameterDirection.Output;
+                    adapterFinishes.Update(ds2);
+                }
+                
+                catch (Exception)
+                {
+                    MessageBox.Show("Bad index/wrong input. Changes won't be saved.", "Wrong input");
+                }
+                
 
                 //Stores
                 adapterStores = new SqlDataAdapter(sqlStores, connection);
 
                 commandBuilder = new SqlCommandBuilder(adapterStores);
-                adapterStores.InsertCommand = new SqlCommand("INSERT INTO Stores " +
+                
+                try
+                {
+                    adapterStores.InsertCommand = new SqlCommand("INSERT INTO Stores " +
                     "(Name, Address)" +
                     " VALUES (@name, @address) SET @Id=SCOPE_IDENTITY()",
                 connection);
+                    adapterStores.InsertCommand.Parameters.Add(new SqlParameter("@name", SqlDbType.VarChar, 50, "Name"));
+                    adapterStores.InsertCommand.Parameters.Add(new SqlParameter("@address", SqlDbType.VarChar, 50, "Address"));
 
-                adapterStores.InsertCommand.Parameters.Add(new SqlParameter("@name", SqlDbType.VarChar, 50, "Name"));
-                adapterStores.InsertCommand.Parameters.Add(new SqlParameter("@address", SqlDbType.VarChar, 50, "Address"));
+                    parameter = adapterStores.InsertCommand.Parameters.Add("@Id", SqlDbType.Int, 0, "Id");
+                    parameter.Direction = ParameterDirection.Output;
 
-                parameter = adapterStores.InsertCommand.Parameters.Add("@Id", SqlDbType.Int, 0, "Id");
-                parameter.Direction = ParameterDirection.Output;
-
-                adapterStores.Update(ds3);
+                    adapterStores.Update(ds3);
+                }
+                
+                catch (Exception)
+                {
+                    MessageBox.Show("Bad index/wrong input. Changes won't be saved.", "Wrong input");
+                }
 
                 //Stock
                 adapterStocks = new SqlDataAdapter(sqlStocks, connection);
 
                 commandBuilder = new SqlCommandBuilder(adapterStocks);
-                adapterStocks.InsertCommand = new SqlCommand("INSERT INTO Stock " +
+                
+                try
+                {
+                    adapterStocks.InsertCommand = new SqlCommand("INSERT INTO Stock " +
                     "(StoreId, ProductId, Quantity)" +
                     " VALUES (@storeId, @productId, @quantity) SET @Id=SCOPE_IDENTITY()",
                 connection);
 
-                adapterStocks.InsertCommand.Parameters.Add(new SqlParameter("@storeId", SqlDbType.Int, 0, "StoreId"));
-                adapterStocks.InsertCommand.Parameters.Add(new SqlParameter("@productId", SqlDbType.Int, 0, "ProductId"));
-                adapterStocks.InsertCommand.Parameters.Add(new SqlParameter("@quantity", SqlDbType.Int, 0, "Quantity"));
+                    adapterStocks.InsertCommand.Parameters.Add(new SqlParameter("@storeId", SqlDbType.Int, 0, "StoreId"));
+                    adapterStocks.InsertCommand.Parameters.Add(new SqlParameter("@productId", SqlDbType.Int, 0, "ProductId"));
+                    adapterStocks.InsertCommand.Parameters.Add(new SqlParameter("@quantity", SqlDbType.Int, 0, "Quantity"));
 
-                parameter = adapterStocks.InsertCommand.Parameters.Add("@Id", SqlDbType.Int, 0, "Id");
-                parameter.Direction = ParameterDirection.Output;
+                    parameter = adapterStocks.InsertCommand.Parameters.Add("@Id", SqlDbType.Int, 0, "Id");
+                    parameter.Direction = ParameterDirection.Output;
 
-                adapterStocks.Update(ds4);
+                    adapterStocks.Update(ds4);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Bad index/wrong input. Changes won't be saved.", "Wrong input");
+                }
+
                 //Workers;
                 adapterWorkers = new SqlDataAdapter(sqlWorkers, connection);
 
                 commandBuilder = new SqlCommandBuilder(adapterWorkers);
-                adapterWorkers.InsertCommand = new SqlCommand("INSERT INTO Workers " +
+                
+                try
+                {
+                    adapterWorkers.InsertCommand = new SqlCommand("INSERT INTO Workers " +
                     "(Name, StoreId, PositionId)" +
                     " VALUES (@name, @storeId, @positionId) SET @Id=SCOPE_IDENTITY()",
                 connection);
-                adapterWorkers.InsertCommand.Parameters.Add(new SqlParameter("@name", SqlDbType.VarChar, 50, "Name"));
-                adapterWorkers.InsertCommand.Parameters.Add(new SqlParameter("@storeId", SqlDbType.Int, 0, "StoreId"));
-                adapterWorkers.InsertCommand.Parameters.Add(new SqlParameter("@positionId", SqlDbType.Int, 0, "PositionId"));
+                    adapterWorkers.InsertCommand.Parameters.Add(new SqlParameter("@name", SqlDbType.VarChar, 50, "Name"));
+                    adapterWorkers.InsertCommand.Parameters.Add(new SqlParameter("@storeId", SqlDbType.Int, 0, "StoreId"));
+                    adapterWorkers.InsertCommand.Parameters.Add(new SqlParameter("@positionId", SqlDbType.Int, 0, "PositionId"));
 
-                parameter = adapterWorkers.InsertCommand.Parameters.Add("@Id", SqlDbType.Int, 0, "Id");
-                parameter.Direction = ParameterDirection.Output;
+                    parameter = adapterWorkers.InsertCommand.Parameters.Add("@Id", SqlDbType.Int, 0, "Id");
+                    parameter.Direction = ParameterDirection.Output;
 
-                adapterWorkers.Update(ds5);
+                    adapterWorkers.Update(ds5);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Bad index/wrong input. Changes won't be saved.", "Wrong input");
+                }
 
                 //Positions;
-                adapterPositions = new SqlDataAdapter(sqlPositions, connection);
+                try
+                {
+                    adapterPositions = new SqlDataAdapter(sqlPositions, connection);
 
-                commandBuilder = new SqlCommandBuilder(adapterPositions);
-                adapterPositions.InsertCommand = new SqlCommand("INSERT INTO Positions " +
-                    "(Name)" +
-                    " VALUES (@name) SET @Id=SCOPE_IDENTITY()",
-                connection);
-                adapterPositions.InsertCommand.Parameters.Add(new SqlParameter("@name", SqlDbType.VarChar, 50, "Name"));
+                    commandBuilder = new SqlCommandBuilder(adapterPositions);
+                    adapterPositions.InsertCommand = new SqlCommand("INSERT INTO Positions " +
+                        "(Name)" +
+                        " VALUES (@name) SET @Id=SCOPE_IDENTITY()",
+                    connection);
+                    adapterPositions.InsertCommand.Parameters.Add(new SqlParameter("@name", SqlDbType.VarChar, 50, "Name"));
 
-                parameter = adapterPositions.InsertCommand.Parameters.Add("@Id", SqlDbType.Int, 0, "Id");
-                parameter.Direction = ParameterDirection.Output;
+                    parameter = adapterPositions.InsertCommand.Parameters.Add("@Id", SqlDbType.Int, 0, "Id");
+                    parameter.Direction = ParameterDirection.Output;
 
-                adapterPositions.Update(ds6);
+                    adapterPositions.Update(ds6);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Bad index/wrong input. Changes won't be saved.", "Wrong input");
+                }
 
                 //CosmTypes;
                 adapterCosmTypes = new SqlDataAdapter(sqlCosmTypes, connection);
 
                 commandBuilder = new SqlCommandBuilder(adapterCosmTypes);
-                adapterCosmTypes.InsertCommand = new SqlCommand("INSERT INTO CosmTypes " +
+                
+                try
+                {
+                    adapterCosmTypes.InsertCommand = new SqlCommand("INSERT INTO CosmTypes " +
                     "(Name)" +
                     " VALUES (@name) SET @Id=SCOPE_IDENTITY()",
                 connection);
-                adapterCosmTypes.InsertCommand.Parameters.Add(new SqlParameter("@name", SqlDbType.VarChar, 50, "Name"));
+                    adapterCosmTypes.InsertCommand.Parameters.Add(new SqlParameter("@name", SqlDbType.VarChar, 50, "Name"));
 
-                parameter = adapterCosmTypes.InsertCommand.Parameters.Add("@Id", SqlDbType.Int, 0, "Id");
-                parameter.Direction = ParameterDirection.Output;
+                    parameter = adapterCosmTypes.InsertCommand.Parameters.Add("@Id", SqlDbType.Int, 0, "Id");
+                    parameter.Direction = ParameterDirection.Output;
 
-                adapterCosmTypes.Update(ds7);
+                    adapterCosmTypes.Update(ds7);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Bad index/wrong input. Changes won't be saved.", "Wrong input");
+                }
 
                 //Collections;
                 adapterCollections = new SqlDataAdapter(sqlCollections, connection);
 
                 commandBuilder = new SqlCommandBuilder(adapterCollections);
-                adapterCollections.InsertCommand = new SqlCommand("INSERT INTO Collections " +
+                
+                try
+                {
+                    adapterCollections.InsertCommand = new SqlCommand("INSERT INTO Collections " +
                     "(Name, Info)" +
                     " VALUES (@name, @Info) SET @Id=SCOPE_IDENTITY()",
                 connection);
-                adapterCollections.InsertCommand.Parameters.Add(new SqlParameter("@name", SqlDbType.VarChar, 50, "Name"));
-                adapterCollections.InsertCommand.Parameters.Add(new SqlParameter("@info", SqlDbType.VarChar, 50, "Info"));
+                    adapterCollections.InsertCommand.Parameters.Add(new SqlParameter("@name", SqlDbType.VarChar, 50, "Name"));
+                    adapterCollections.InsertCommand.Parameters.Add(new SqlParameter("@info", SqlDbType.VarChar, 50, "Info"));
 
-                parameter = adapterCollections.InsertCommand.Parameters.Add("@Id", SqlDbType.Int, 0, "Id");
-                parameter.Direction = ParameterDirection.Output;
+                    parameter = adapterCollections.InsertCommand.Parameters.Add("@Id", SqlDbType.Int, 0, "Id");
+                    parameter.Direction = ParameterDirection.Output;
 
-                adapterCollections.Update(ds8);
+                    adapterCollections.Update(ds8);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Bad index/wrong input. Changes won't be saved.", "Wrong input");
+                }
+
                 //Colors;
                 adapterColors = new SqlDataAdapter(sqlColors, connection);
 
                 commandBuilder = new SqlCommandBuilder(adapterColors);
-                adapterColors.InsertCommand = new SqlCommand("INSERT INTO Colors " +
+                
+                try
+                {
+                    adapterColors.InsertCommand = new SqlCommand("INSERT INTO Colors " +
                     "(Name)" +
                     " VALUES (@name) SET @Id=SCOPE_IDENTITY()",
                 connection);
-                adapterColors.InsertCommand.Parameters.Add(new SqlParameter("@name", SqlDbType.VarChar, 50, "Name"));
+                    adapterColors.InsertCommand.Parameters.Add(new SqlParameter("@name", SqlDbType.VarChar, 50, "Name"));
 
-                parameter = adapterColors.InsertCommand.Parameters.Add("@Id", SqlDbType.Int, 0, "Id");
-                parameter.Direction = ParameterDirection.Output;
+                    parameter = adapterColors.InsertCommand.Parameters.Add("@Id", SqlDbType.Int, 0, "Id");
+                    parameter.Direction = ParameterDirection.Output;
 
-                adapterColors.Update(ds9);
+                    adapterColors.Update(ds9);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Bad index/wrong input. Changes won't be saved.", "Wrong input");
+                }
             }
             
+        }
+        void dataGridView1_DataError(object sender, DataGridViewDataErrorEventArgs anError)
+        {
+            MessageBox.Show("Wrong input! (in Products)");
+            anError.ThrowException = false;
+        }
+        void dataGridView2_DataError(object sender, DataGridViewDataErrorEventArgs anError)
+        {
+            MessageBox.Show("Wrong input! (in Finishes)");
+            anError.ThrowException = false;
+        }
+        void dataGridView3_DataError(object sender, DataGridViewDataErrorEventArgs anError)
+        {
+            MessageBox.Show("Wrong input! (in Stores)");
+            anError.ThrowException = false;
+        }
+        void dataGridView4_DataError(object sender, DataGridViewDataErrorEventArgs anError)
+        {
+            MessageBox.Show("Wrong input! (in Stock)");
+            anError.ThrowException = false;
+        }
+        void dataGridView5_DataError(object sender, DataGridViewDataErrorEventArgs anError)
+        {
+            MessageBox.Show("Wrong input! (in Workers)");
+            anError.ThrowException = false;
+        }
+        void dataGridView6_DataError(object sender, DataGridViewDataErrorEventArgs anError)
+        {
+            MessageBox.Show("Wrong input! (in Positions)");
+            anError.ThrowException = false;
+        }
+        void dataGridView7_DataError(object sender, DataGridViewDataErrorEventArgs anError)
+        {
+            MessageBox.Show("Wrong input! (in Types)");
+            anError.ThrowException = false;
+        }
+        void dataGridView8_DataError(object sender, DataGridViewDataErrorEventArgs anError)
+        {
+            MessageBox.Show("Wrong input! (in Collections)");
+            anError.ThrowException = false;
+        }
+        void dataGridView9_DataError(object sender, DataGridViewDataErrorEventArgs anError)
+        {
+            MessageBox.Show("Wrong input! (in Colors)");
+            anError.ThrowException = false;
         }
     }
 }
