@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form0));
             this.buttonGet = new System.Windows.Forms.Button();
             this.buttonSQL = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -36,7 +35,7 @@
             // buttonGet
             // 
             this.buttonGet.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.buttonGet.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonGet.BackgroundImage")));
+            this.buttonGet.BackgroundImage = global::DBCosmetics.Properties.Resources._1;
             this.buttonGet.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonGet.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonGet.Location = new System.Drawing.Point(28, 12);
@@ -49,7 +48,7 @@
             // buttonSQL
             // 
             this.buttonSQL.BackColor = System.Drawing.Color.White;
-            this.buttonSQL.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonSQL.BackgroundImage")));
+            this.buttonSQL.BackgroundImage = global::DBCosmetics.Properties.Resources._4;
             this.buttonSQL.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonSQL.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonSQL.Location = new System.Drawing.Point(428, 12);
@@ -67,6 +66,7 @@
             this.ClientSize = new System.Drawing.Size(832, 532);
             this.Controls.Add(this.buttonSQL);
             this.Controls.Add(this.buttonGet);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "Form0";
             this.Text = "Form0";
             this.ResumeLayout(false);

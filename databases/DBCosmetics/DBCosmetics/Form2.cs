@@ -70,6 +70,9 @@ namespace DBCosmetics
                 comboBoxType.DisplayMember = "Name";
                 comboBoxType.ValueMember = "Id";
                 comboBoxType.DataSource = ds.Tables["CosmType"];
+                comboBox8.DisplayMember = "Name";
+                comboBox8.ValueMember = "Id";
+                comboBox8.DataSource = ds.Tables["CosmType"];
 
                 //store
                 adapter = new SqlDataAdapter(sqlStores, connection);
@@ -96,25 +99,23 @@ namespace DBCosmetics
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                string sql = String.Format("SELECT Products.Id FROM Products " +
-                    "where Products.Id in" +
-                    "(select Stock.ProductId from Stock" +
-                    "where Stock.StoreId in" +
-                    "(select Stores.Id from Stores" +
-                    "where Stores.Name='{1}'))" +
-                    //"and Products.ColorId in " +
-                    //"(select Colors.Id from Colors where Colors.Name='{0}')", 
+                string sql = String.Format(@"SELECT Products.Id, Products.Price, Products.Quantity, Products.ColorId, Products.CollectionId, Products.CosmTypeId, Products.FinishId
+                    FROM Products 
+                    where Products.Id in
+                    (select Stock.ProductId from Stock
+                    where Stock.StoreId in
+                    (select Stores.Id from Stores
+                    where Stores.Name='{1}'))
+                    and Products.ColorId in 
+                    (select Colors.Id from Colors where Colors.Name='{0}')", 
                     comboBox1.Text,
                     comboBox2.Text);
 
-
-                //SqlCommand command = new SqlCommand(sql, connection);
                 adapter = new SqlDataAdapter(sql, connection);
                 DataSet ds = new DataSet();
                 adapter.Fill(ds);
                 dataGridView1.DataSource = ds.Tables[0];
-                //dataGridView1.DataSource = command.ExecuteReader();
-
+                
             }
         }
 
@@ -127,32 +128,34 @@ namespace DBCosmetics
                 string sql;
                 if (comboBoxSql2.Text == "Products")
                 {
-                    sql = String.Format("SELECT * FROM Products " +
-                    "WHERE ColorId in" +
-                    "(select Id from Colors where Name='{0}')" +
-                    "and CosmTypeId in" +
-                    "(select Id from CosmTypes where Name='{1}')" +
-                    "and CollectionId in" +
-                    "(select Id from Collections where Name='{2}')" +
-                    "and FinishId in" +
-                    "(select Id from Finishes where Name='{3}')", comboBoxColor.Text, comboBoxType.Text, comboBoxCollection.Text, comboBoxFinish.Text);
+                    sql = String.Format(@"SELECT * FROM Products 
+                    WHERE ColorId in
+                    (select Id from Colors where Name='{0}')
+                    and CosmTypeId in
+                    (select Id from CosmTypes where Name='{1}')
+                    and CollectionId in
+                    (select Id from Collections where Name='{2}')
+                    and FinishId in
+                    (select Id from Finishes where Name='{3}')", 
+                    comboBoxColor.Text, comboBoxType.Text, comboBoxCollection.Text, comboBoxFinish.Text);
                 }
                 else
                 {
-                    sql = String.Format("SELECT * FROM Stores inner join " +
-                        "(Stock inner join " +
-                        "(Products inner join Colors on Products.ColorId=Colors.Id and " +
-                        "Products inner join Colections on Collections.Id=Products.CollectionId and " +
-                        "Products inner join CosmTypes on CosmTypes.Id=Products.CosmTypeId and " +
-                        "Products inner join Finishes on Finishes.Id=Products.FinishId)" +
-                        "on Stock.ProductId=Products.Id)" +
-                        "on Stock.StoreId=Stores.Id" +
-                        "where  Colors.Name='{0}' and" +
-                        "CosmTypes.Name='{1}' and" +
-                        "Collections.Name='{2}' and" +
-                        "Finishes.Name='{3}'"
-                        
 
+                    sql = String.Format(@"SELECT * FROM Stores inner join 
+                        (Stock inner join 
+                        (Products 
+                        inner join Colors on Products.ColorId=Colors.Id
+                        inner join Collections on Collections.Id=Products.CollectionId 
+                        inner join CosmTypes on CosmTypes.Id=Products.CosmTypeId 
+                        inner join Finishes on Finishes.Id=Products.FinishId) 
+                        on Stock.ProductId=Products.Id) 
+                        on Stock.StoreId=Stores.Id 
+                        where 
+                        Colors.Name like '{0}' and 
+                        CosmTypes.Name like '{1}' and 
+                        Collections.Name = '{2}' and 
+                        Finishes.Name like '{3}'"
                     , comboBoxColor.Text, comboBoxType.Text, comboBoxCollection.Text, comboBoxFinish.Text);
                 }
                 adapter = new SqlDataAdapter(sql, connection);
@@ -179,18 +182,18 @@ namespace DBCosmetics
                 {
                     if (comboBox3.Text != "Finish")
                     {
-                        sql = String.Format("SELECT * FROM {0}s where Id in " +
-                        "(select {0}Id from Products where Id in" +
-                        "(select ProductId from Stock where StoreId in" +
-                        "(select Id from Stores where Name='{1}')))"
+                        sql = String.Format(@"SELECT * FROM {0}s where Id in 
+                        (select {0}Id from Products where Id in
+                        (select ProductId from Stock where StoreId in
+                        (select Id from Stores where Name='{1}')))"
                     , comboBox3.Text, comboBox6.Text);
                     }
                     else
                     {
-                        sql = String.Format("SELECT * FROM {0}es where Id in " +
-                        "(select {0}Id from Products where Id in" +
-                        "(select ProductId from Stock where StoreId in" +
-                        "(select Id from Stores where Name='{1}')))"
+                        sql = String.Format(@"SELECT * FROM {0}es where Id in 
+                        (select {0}Id from Products where Id in
+                        (select ProductId from Stock where StoreId in
+                        (select Id from Stores where Name='{1}')))"
                     , comboBox3.Text, comboBox6.Text);
                     }
                 }
@@ -198,18 +201,18 @@ namespace DBCosmetics
                 {
                     if (comboBox3.Text != "Finish")
                     {
-                        sql = String.Format("SELECT * FROM {0}s where Id not in " +
-                        "(select {0}Id from Products where Id in" +
-                        "(select ProductId from Stock where StoreId in" +
-                        "(select Id from Stores where Name='{1}')))"
+                        sql = String.Format(@"SELECT * FROM {0}s where Id not in 
+                        (select {0}Id from Products where Id in
+                        (select ProductId from Stock where StoreId in
+                        (select Id from Stores where Name='{1}')))"
                     , comboBox3.Text, comboBox6.Text);
                     }
                     else
                     {
-                        sql = String.Format("SELECT * FROM {0}es where Id not in " +
-                        "(select {0}Id from Products where Id in" +
-                        "(select ProductId from Stock where StoreId in" +
-                        "(select Id from Stores where Name='{1}')))"
+                        sql = String.Format(@"SELECT * FROM {0}es where Id not in 
+                        (select {0}Id from Products where Id in
+                        (select ProductId from Stock where StoreId in
+                        (select Id from Stores where Name='{1}')))"
                     , comboBox3.Text, comboBox6.Text);
                     }
                 }
@@ -227,26 +230,49 @@ namespace DBCosmetics
             {
                 connection.Open();
                 string sql;
-                if (comboBox3.Text != "Finish")
+                try
                 {
-                    sql = String.Format("SELECT * FROM {0}s where Id in " +
-                    "(select {0}Id from Products where Id in" +
-                    "(select ProductId from Stock where StoreId in" +
-                    "(select Id from Stores where Name='{1}')))"
-                , comboBox3.Text, comboBox6.Text);
+                    if (Convert.ToInt32(textBox1.Text) < 1)
+                        textBox1.Text = "1";
+                    string comp;
+                    if (comboBox7.Text == "more than in")
+                        comp = ">=";
+                    else if (comboBox7.Text == "only in")
+                        comp = "=";
+                    else
+                        comp = "<=";
+                    if (comboBox4.Text != "Finish")
+                    {
+                    sql = String.Format(@"SELECT {0}s.Name FROM {0}s 
+                        inner join Products 
+                        inner join Stock inner join Stores on Stores.Id=Stock.StoreId
+                        on Stock.ProductId=Products.Id
+                        on Products.{0}Id={0}s.Id
+                            group by {0}s.Name
+                            having count(distinct Stores.Id) {2}'{1}'"
+                , comboBox4.Text, textBox1.Text, comp);
+                    }
+                    else
+                    {
+                        sql = String.Format(@"SELECT {0}es.Name FROM {0}es 
+                        inner join Products 
+                        inner join Stock 
+                        inner join Stores on Stores.Id=Stock.StoreId
+                        on Stock.ProductId=Products.Id
+                        on Products.{0}Id={0}es.Id
+                            group by {0}es.Name
+                            having count(distinct Stores.Id) {2} '{1}'"
+                    , comboBox4.Text, textBox1.Text, comp);
+                    }
+                    adapter = new SqlDataAdapter(sql, connection);
+                    DataSet ds = new DataSet();
+                    adapter.Fill(ds);
+                    dataGridView1.DataSource = ds.Tables[0];
                 }
-                else
+                catch (Exception)
                 {
-                    sql = String.Format("SELECT * FROM {0}es where Id in " +
-                    "(select {0}Id from Products where Id in" +
-                    "(select ProductId from Stock where StoreId in" +
-                    "(select Id from Stores where Name='{1}')))"
-                , comboBox3.Text, comboBox6.Text);
+                    MessageBox.Show("Wrong input!", "Error");
                 }
-                adapter = new SqlDataAdapter(sql, connection);
-                DataSet ds = new DataSet();
-                adapter.Fill(ds);
-                dataGridView1.DataSource = ds.Tables[0];
             }
         }
 
@@ -256,15 +282,54 @@ namespace DBCosmetics
             {
                 connection.Open();
                 string sql;
-                sql = String.Format("SELECT * FROM Products where "
+                try
+                {
+                    if (Convert.ToInt32(textBox2.Text) < 0)
+                        textBox2.Text = "0";
+                    if (Convert.ToInt32(textBox3.Text) < 0)
+                        textBox3.Text = "0";
+                    if (Convert.ToInt32(textBox2.Text) > Convert.ToInt32(textBox3.Text))
+                    {
+                        textBox2.Text = "0";
+                        textBox3.Text = "0";
+                    }
+                        sql = String.Format("SELECT Products.Id, Products.Price, Products.Quantity, Products.ColorId, Products.CollectionId, Products.CosmTypeId, Products.FinishId" +
+                            " FROM Products where "
                     + "Price>={0} and Price<={1}"
                 , textBox2.Text, textBox3.Text);
+                        adapter = new SqlDataAdapter(sql, connection);
+                        DataSet ds = new DataSet();
+                        adapter.Fill(ds);
+                        dataGridView1.DataSource = ds.Tables[0];
+                    
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Wrong input!", "Error");
+                }
+            }
+        }
+
+        private void buttonRequest6_Click(object sender, EventArgs e)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                string sql;
+                sql = String.Format(@"Select Stores.Id, Stores.Name, Stores.Address 
+                        from Stores
+                        where not exists
+                            (select * from Products inner join CosmTypes
+                            on Products.CosmTypeId=CosmTypes.Id
+                            where CosmTypes.Name='{0}' and not exists
+                                (select * from Stock
+                                where Stock.ProductId=Products.Id and Stock.StoreId=Stores.Id))"
+                , comboBox8.Text);
                 adapter = new SqlDataAdapter(sql, connection);
                 DataSet ds = new DataSet();
                 adapter.Fill(ds);
                 dataGridView1.DataSource = ds.Tables[0];
             }
         }
-
     }
 }
