@@ -85,6 +85,10 @@ namespace DBCosmetics
                 comboBox6.DisplayMember = "Name";
                 comboBox6.ValueMember = "Id";
                 comboBox6.DataSource = ds.Tables["Store"];
+
+                comboBox9.DisplayMember = "Name";
+                comboBox9.ValueMember = "Id";
+                comboBox9.DataSource = ds.Tables["Store"];
             }
         }
 
@@ -130,13 +134,13 @@ namespace DBCosmetics
                 {
                     sql = String.Format(@"SELECT * FROM Products 
                     WHERE ColorId in
-                    (select Id from Colors where Name='{0}')
+                    (select Id from Colors where Name like '{0}')
                     and CosmTypeId in
-                    (select Id from CosmTypes where Name='{1}')
+                    (select Id from CosmTypes where Name like '{1}')
                     and CollectionId in
-                    (select Id from Collections where Name='{2}')
+                    (select Id from Collections where Name like '{2}')
                     and FinishId in
-                    (select Id from Finishes where Name='{3}')", 
+                    (select Id from Finishes where Name like '{3}')", 
                     comboBoxColor.Text, comboBoxType.Text, comboBoxCollection.Text, comboBoxFinish.Text);
                 }
                 else
@@ -158,6 +162,7 @@ namespace DBCosmetics
                         Finishes.Name like '{3}'"
                     , comboBoxColor.Text, comboBoxType.Text, comboBoxCollection.Text, comboBoxFinish.Text);
                 }
+                
                 adapter = new SqlDataAdapter(sql, connection);
                 DataSet ds = new DataSet();
                 adapter.Fill(ds);
@@ -321,10 +326,27 @@ namespace DBCosmetics
                         where not exists
                             (select * from Products inner join CosmTypes
                             on Products.CosmTypeId=CosmTypes.Id
-                            where CosmTypes.Name='{0}' and not exists
+                            where CosmTypes.Name like '{0}' and not exists
                                 (select * from Stock
                                 where Stock.ProductId=Products.Id and Stock.StoreId=Stores.Id))"
                 , comboBox8.Text);
+                adapter = new SqlDataAdapter(sql, connection);
+                DataSet ds = new DataSet();
+                adapter.Fill(ds);
+                dataGridView1.DataSource = ds.Tables[0];
+            }
+        }
+
+        private void buttonRequest7_Click(object sender, EventArgs e)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                string sql;
+                sql = String.Format(@"Select Workers.Id, Workers.Name, Workers.StoreId, Workers.PositionId
+                        from Workers inner join Stores on Stores.Id=Workers.StoreId
+                        where Stores.Name = '{0}'"
+                , comboBox9.Text);
                 adapter = new SqlDataAdapter(sql, connection);
                 DataSet ds = new DataSet();
                 adapter.Fill(ds);

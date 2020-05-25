@@ -72,6 +72,9 @@
             this.buttonRequest2 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
+            this.label15 = new System.Windows.Forms.Label();
+            this.comboBox9 = new System.Windows.Forms.ComboBox();
+            this.buttonRequest7 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -91,7 +94,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(695, 451);
+            this.dataGridView1.Size = new System.Drawing.Size(695, 503);
             this.dataGridView1.TabIndex = 0;
             // 
             // label1
@@ -570,6 +573,9 @@
             // panel5
             // 
             this.panel5.BackColor = System.Drawing.Color.White;
+            this.panel5.Controls.Add(this.buttonRequest7);
+            this.panel5.Controls.Add(this.comboBox9);
+            this.panel5.Controls.Add(this.label15);
             this.panel5.Controls.Add(this.flowLayoutPanel1);
             this.panel5.Controls.Add(this.panel2);
             this.panel5.Controls.Add(this.panel1);
@@ -579,15 +585,45 @@
             this.panel5.Controls.Add(this.dataGridView1);
             this.panel5.Location = new System.Drawing.Point(1, 61);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(1427, 454);
+            this.panel5.Size = new System.Drawing.Size(1427, 510);
             this.panel5.TabIndex = 22;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(16, 462);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(162, 17);
+            this.label15.TabIndex = 22;
+            this.label15.Text = "Find workers of store";
+            // 
+            // comboBox9
+            // 
+            this.comboBox9.FormattingEnabled = true;
+            this.comboBox9.Location = new System.Drawing.Point(167, 459);
+            this.comboBox9.Name = "comboBox9";
+            this.comboBox9.Size = new System.Drawing.Size(121, 25);
+            this.comboBox9.TabIndex = 23;
+            // 
+            // buttonRequest7
+            // 
+            this.buttonRequest7.BackColor = System.Drawing.Color.SeaShell;
+            this.buttonRequest7.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonRequest7.Location = new System.Drawing.Point(478, 448);
+            this.buttonRequest7.Margin = new System.Windows.Forms.Padding(0);
+            this.buttonRequest7.Name = "buttonRequest7";
+            this.buttonRequest7.Size = new System.Drawing.Size(101, 45);
+            this.buttonRequest7.TabIndex = 24;
+            this.buttonRequest7.Text = "OK";
+            this.buttonRequest7.UseVisualStyleBackColor = false;
+            this.buttonRequest7.Click += new System.EventHandler(this.buttonRequest7_Click);
             // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::DBCosmetics.Properties.Resources._1231;
-            this.ClientSize = new System.Drawing.Size(1368, 537);
+            this.ClientSize = new System.Drawing.Size(1368, 599);
             this.Controls.Add(this.panel5);
             this.Font = new System.Drawing.Font("Lucida Sans", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
@@ -610,6 +646,7 @@
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -660,5 +697,8 @@
         private System.Windows.Forms.Button buttonRequest2;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.Button buttonRequest7;
+        private System.Windows.Forms.ComboBox comboBox9;
+        private System.Windows.Forms.Label label15;
     }
 }
