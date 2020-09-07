@@ -1,65 +1,60 @@
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
 
 public class Main {
 
     public static void main(String[] args) {
+        final String fileName = "in.txt";
         // init input file
-        initFile("in.txt");
+        initFile(fileName);
         String data = "";
+        File file = new File(fileName);
         try {
-            data = readFileAsString("in.txt");
+            Scanner scanner = new Scanner(file);
             System.out.println("Reading from file...");
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+            List<String> result = new ArrayList<>();
 
-        data = data.replaceAll("[\n]", "");
-        List<String> words = new ArrayList<>(Arrays.asList(data.split("[-+*/= (),.?!&`';:]")));
-        HashSet<String> doubleConsonants = new HashSet<>(
-                Arrays.asList(
-                        "bb", "cc", "dd", "ff", "gg", "hh", "jj", "kk", "ll", "mm", "nn", "pp",
-                        "qq", "rr", "ss", "tt", "vv", "ww", "xx", "zz"));
-        List<String> result = new ArrayList<>();
-        for (String word : words) {
-            for (String pair : doubleConsonants) {
-                if (word.contains(pair)) {
-                    if (!result.contains(word)) {
-                        result.add(word);
-                        break;
+            while (scanner.hasNextLine()) {
+                data = scanner.nextLine();
+                data = data.replaceAll("[\n]", "");
+                List<String> words = new ArrayList<>(Arrays.asList(data.split("[-+*/= (),.?!&`';:]")));
+                HashSet<String> doubleConsonants = new HashSet<>(
+                        Arrays.asList(
+                                "bb", "cc", "dd", "ff", "gg", "hh", "jj", "kk", "ll", "mm", "nn", "pp",
+                                "qq", "rr", "ss", "tt", "vv", "ww", "xx", "zz"));
+
+                for (String word : words) {
+                    for (String pair : doubleConsonants) {
+                        if (word.contains(pair)) {
+                            if (!result.contains(word)) {
+                                result.add(word);
+                                break;
+                            }
+                        }
                     }
                 }
-            }
-        }
-        System.out.println(result);
-        try {
-            FileWriter myWriter = new FileWriter("out.txt");
-            myWriter.write("Results:\n");
-            for (String word : result) {
-                if (!word.isEmpty()) {
-                    myWriter.write(word + "\n");
+                try {
+                    FileWriter myWriter = new FileWriter("out.txt");
+                    myWriter.write("Results:\n");
+                    for (String word : result) {
+                        if (!word.isEmpty()) {
+                            myWriter.write(word + "\n");
+                        }
+                    }
+                    myWriter.close();
+                } catch (IOException e) {
+                    System.out.println("An error occurred.");
+                    e.printStackTrace();
                 }
             }
-            myWriter.close();
+            scanner.close();
             System.out.println("Successfully wrote to the file.");
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+        } catch (Exception exception) {
+            System.out.println(exception);
         }
-    }
 
-    public static String readFileAsString(String fileName) throws Exception {
-        File file = new File(fileName);
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-        String data = "";
-        String s;
-        while ((s = reader.readLine()) != null) {
-            data = data + " " + s;
-        }
-        return data;
     }
 
     private static void initFile(String fileName) {
