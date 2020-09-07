@@ -16,7 +16,7 @@ public class Main {
         } catch (Exception e) {
             System.out.println(e);
         }
-        //System.out.println(data);
+
         data = data.replaceAll("[\n]", "");
         List<String> words = new ArrayList<>(Arrays.asList(data.split("[-+*/= (),.?!&`';:]")));
         HashSet<String> doubleConsonants = new HashSet<>(
@@ -24,9 +24,7 @@ public class Main {
                         "bb", "cc", "dd", "ff", "gg", "hh", "jj", "kk", "ll", "mm", "nn", "pp",
                         "qq", "rr", "ss", "tt", "vv", "ww", "xx", "zz"));
         List<String> result = new ArrayList<>();
-        int i = 0;
         for (String word : words) {
-            i++;
             for (String pair : doubleConsonants) {
                 if (word.contains(pair)) {
                     if (!result.contains(word)) {
@@ -34,9 +32,6 @@ public class Main {
                         break;
                     }
                 }
-            }
-            if (i % 1000 == 0) {
-                System.out.println(i);
             }
         }
         System.out.println(result);
