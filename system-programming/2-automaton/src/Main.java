@@ -9,16 +9,18 @@ public class Main {
     private static Boolean [] used = new Boolean[0];
     private static HashSet<Character> alphabet = new HashSet<>();
     private static HashSet<Integer> finalStates = new HashSet<>();
-    private static String word = "";
+    private static String word;
 
     public static void main(String[] args) {
 
 	    // init input file
-        final String fileName = "in.txt";
+        final String fileName = "in1.txt";
         File file = new File(fileName);
         try {
             Scanner scanner = new Scanner(file);
             System.out.println("Reading from file...");
+            System.out.println("Reading word...");
+            word = scanner.nextLine();
             int alphabetSize = Integer.parseInt(scanner.nextLine());
             for (int i = 0; i <= alphabetSize; i++) {
                 alphabet.add((char)('a' + i));
@@ -49,12 +51,13 @@ public class Main {
                     System.out.println(e);
                 }
             }
-            System.out.println("Reading word...");
-            word = scanner.nextLine();
-            System.out.println(automaton);
+
+            //word = "dd";
+            System.out.println("Automaton: " + automaton);
+            System.out.println("Word w0 = " + word);
 
             // create set of states, that can be reached from s0
-            System.out.println("create start states");
+            System.out.println("Create start states");
             HashSet<Integer> startStates = new HashSet<>();
             used = new Boolean[statesSize];
             Arrays.fill(used, false);
@@ -62,25 +65,33 @@ public class Main {
             System.out.println(startStates);
 
             // create set of states, that can be reached from final states
-            System.out.println("create finish states");
+            System.out.println("Create finish states");
             HashSet<Integer> finishStates = new HashSet<>();
-            for (Integer state : finalStates) {
+            for (int state = 0; state < statesSize; state++) {
+                HashSet<Integer> states = new HashSet<>();
                 used = new Boolean[statesSize];
                 Arrays.fill(used, false);
-                dfs(finishStates, state);
+                dfs(states, state);
+                for (Integer finalState : finalStates) {
+                    if (states.contains(finalState)) {
+                        finishStates.add(state);
+                        break;
+                    }
+                }
             }
             System.out.println(finishStates);
 
-            // check if w0 contains between w1 and w2
-            System.out.println("check for w0");
+            // Check if w0 contains between w1 and w2
+            System.out.println("Check for w0...");
             for (Integer state : startStates) {
                 used = new Boolean[statesSize];
                 Arrays.fill(used, false);
                 if (pathExists(state, finishStates)) {
-                    out("True!");
+                    out("Correct word.");
                     return;
                 }
             }
+            out("Incorrect word.");
 
         } catch (Exception exception) {
             System.out.println(exception);
@@ -92,18 +103,11 @@ public class Main {
     private static void dfs(HashSet<Integer> states, int state) {
         used[state] = true;
         states.add(state);
-        System.out.println("inside the dfs");
-
         HashMap<Character, Integer> map = automaton.get(state);
-        System.out.println(map);
         if (map == null) {
             return;
         }
         for (Map.Entry<Character, Integer> entry : map.entrySet()) {
-            /*System.out.println("curr state is "+ state);
-            System.out.println("curr symbol is "+ entry.getKey());
-            System.out.println("next state is "+ entry.getValue());*/
-            System.out.println(state + " " + entry.getKey() + " " + entry.getValue());
             if (alphabet.contains(entry.getKey()) && !used[entry.getValue()]) {
                 dfs(states, entry.getValue());
             }
@@ -115,14 +119,18 @@ public class Main {
         int currState = state;
         for (char letter : word.toCharArray()) {
             int nextState = 0;
-            if (automaton.get(currState).get(letter) != null) {
-                nextState = automaton.get(currState).get(letter);
-                currState = nextState;
+            if (automaton.get(currState) != null) {
+                if (automaton.get(currState).get(letter) != null) {
+                    nextState = automaton.get(currState).get(letter);
+                    currState = nextState;
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }
         }
-        if (states.contains(currState)) {
+        if (states.contains(currState) && currState != state) {
             return true;
         }
         return false;
