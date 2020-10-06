@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.security.cert.LDAPCertStoreParameters;
 import java.util.*;
 import static java.lang.Math.min;
 
@@ -15,6 +16,7 @@ public class Main {
     private static final HashMap<Integer, String> lexicalClasses = new HashMap<>();
     private static final HashSet<String> operators = new HashSet<>();
     private static final HashSet<String> keywords = new HashSet<>();
+    private static final HashSet<String> dirs = new HashSet<>();
     private static String word;
     private static int alphabetSize = 26;
 
@@ -37,9 +39,9 @@ public class Main {
                 myWriter.write("Result:\n");
                 Boolean isComment = false;
                 while (scanner.hasNext()) {
+                    //ArrayList<String> words = new ArrayList<>(Arrays.asList(scanner.nextLine().split(" ")));
                     String word = scanner.next();
                     if (word.startsWith("/*") && !isComment) {
-                        System.out.println("/*"+word);
                         isComment = true;
                         while (isComment) {
                             if (word.endsWith("*/")) {
@@ -53,28 +55,38 @@ public class Main {
                     } else {
                         String lexicalClass = "";
                         int state = -1;
-                        if (operators.contains(word)) {
+                        if (word.startsWith("#")) {
+                            String newWord = word.replaceAll("#", "");
+                            if (dirs.contains(newWord)) {
+                                newWord = scanner.nextLine();
+                                word = word + newWord;
+                                lexicalClass = "directive";
+
+                            } else {
+                                lexicalClass = "error";
+                            }
+                        } else if (operators.contains(word)) {
                             lexicalClass = "operator";
-                        } else if (keywords.contains(word)){
+                        } else if (keywords.contains(word)) {
                             lexicalClass = "keyword";
                         } else {
                             state = automat(word);
-                            System.out.println(state);
+                            //System.out.println(state);
                             if (finalStates.contains(state)) {
-                                System.out.println("Success!");
+                                // System.out.println("\u001B[31m" + "Success!" + "\u001B[0m");
                                 // set color
                                 lexicalClass = lexicalClasses.get(state);
                             } else {
-                                System.out.println("Not success...");
+                                //System.out.println("Not success...");
                                 // set red color
                                 lexicalClass = "Error";
                             }
                         }
-
                         myWriter.write("<" + word + "> <" + lexicalClass + ">\n");
                     }
                 }
                 myWriter.close();
+
             } catch (IOException e) {
                 System.out.println("An error occurred.");
                 e.printStackTrace();
@@ -97,8 +109,9 @@ public class Main {
         }
         hexadecimal.addAll(Arrays.asList('a', 'b', 'c', 'd', 'e', 'f',
                 'A', 'B', 'C', 'D', 'E', 'F'));
-        operators.addAll(Arrays.asList("+", "-", "=", "/", "%", "^", "|", "&", "?", "!", ",", ";", "(", ")", "[", "]",
-                ".", ">", "<", "*", "::", "++", "--", "->", ">>", "<<", "<=", ">=", "==", "!=", "&&", "||",
+        operators.addAll(Arrays.asList("+", "-", "=", "/", "%", "^", "|", "&", "?", "!", ",", ";",
+                "(", ")", "[", "]", "{", "}", ".", ">", "<", "*", "'", "\"",
+                "::", "++", "--", "->", ">>", "<<", "<=", ">=", "==", "!=", "&&", "||",
                 "+=", "-=", "/=", "*=", "%=", "<<=", ">>="));
         File file = new File("in_keywords.txt");
         try {
@@ -110,6 +123,7 @@ public class Main {
             System.out.println(e);
         }
 
+        dirs.addAll(Arrays.asList("include", "define", "ifdef", "ifndef", "endif"));
     }
 
     private static void initAutomaton() {
