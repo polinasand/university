@@ -13,6 +13,8 @@ public class Main {
     private static final HashSet<Character> octal = new HashSet<>();
     private static final HashSet<Character> hexadecimal = new HashSet<>();
     private static final HashMap<Integer, String> lexicalClasses = new HashMap<>();
+    private static final HashSet<String> operators = new HashSet<>();
+    private static final HashSet<String> keywords = new HashSet<>();
     private static String word;
     private static int alphabetSize = 26;
 
@@ -33,21 +35,44 @@ public class Main {
             try {
                 FileWriter myWriter = new FileWriter("out.txt");
                 myWriter.write("Result:\n");
+                Boolean isComment = false;
                 while (scanner.hasNext()) {
                     String word = scanner.next();
-                    String lexicalClass = "";
-                    int state = automat(word);
-                    System.out.println(state);
-                    if (finalStates.contains(state)) {
-                        System.out.println("Success!");
-                        // set color
-                        lexicalClass = lexicalClasses.get(state);
+                    if (word.startsWith("/*") && !isComment) {
+                        System.out.println("/*"+word);
+                        isComment = true;
+                        while (isComment) {
+                            if (word.endsWith("*/")) {
+                                isComment = false;
+                                break;
+                            }
+                            word = scanner.next();
+                        }
+                    } else if (word.startsWith("//") && !isComment) {
+                        word = scanner.nextLine();
                     } else {
-                        System.out.println("Not success...");
-                        // set red color
-                        lexicalClass = "Error";
+                        String lexicalClass = "";
+                        int state = -1;
+                        if (operators.contains(word)) {
+                            lexicalClass = "operator";
+                        } else if (keywords.contains(word)){
+                            lexicalClass = "keyword";
+                        } else {
+                            state = automat(word);
+                            System.out.println(state);
+                            if (finalStates.contains(state)) {
+                                System.out.println("Success!");
+                                // set color
+                                lexicalClass = lexicalClasses.get(state);
+                            } else {
+                                System.out.println("Not success...");
+                                // set red color
+                                lexicalClass = "Error";
+                            }
+                        }
+
+                        myWriter.write("<" + word + "> <" + lexicalClass + ">\n");
                     }
-                    myWriter.write("<" + word + "> <" + lexicalClass + ">\n");
                 }
                 myWriter.close();
             } catch (IOException e) {
@@ -72,6 +97,19 @@ public class Main {
         }
         hexadecimal.addAll(Arrays.asList('a', 'b', 'c', 'd', 'e', 'f',
                 'A', 'B', 'C', 'D', 'E', 'F'));
+        operators.addAll(Arrays.asList("+", "-", "=", "/", "%", "^", "|", "&", "?", "!", ",", ";", "(", ")", "[", "]",
+                ".", ">", "<", "*", "::", "++", "--", "->", ">>", "<<", "<=", ">=", "==", "!=", "&&", "||",
+                "+=", "-=", "/=", "*=", "%=", "<<=", ">>="));
+        File file = new File("in_keywords.txt");
+        try {
+            Scanner scanner = new Scanner(file);
+            while (scanner.hasNext()) {
+                keywords.add(scanner.next());
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
     }
 
     private static void initAutomaton() {
@@ -223,7 +261,6 @@ public class Main {
         lexicalClasses.put(29, "number constant");
         lexicalClasses.put(30, "number constant");
         lexicalClasses.put(3, "string constant");
-
     }
 
     private static int automat(String word) {
@@ -243,4 +280,5 @@ public class Main {
         }
         return q;
     }
+
 }
