@@ -114,7 +114,7 @@ const BigInt operator * (const BigInt &a, const int b) {
 
 const BigInt operator / (const BigInt &a, const BigInt &b) {
     if (b == BigInt("0")) {
-        cout << "No division by 0";
+        cout << "No division by 0" << endl;
         return a;
     }
     if (abs(a) < abs(b)){
@@ -137,7 +137,6 @@ const BigInt operator / (const BigInt &a, const BigInt &b) {
 
 const BigInt operator % (const BigInt &a, const BigInt &b) {
     if (b <= BigInt("0")) {
-        cout << "No modulo <=0";
         return a;
     }
     return a - b * (a / b);
@@ -146,19 +145,22 @@ const BigInt operator % (const BigInt &a, const BigInt &b) {
 const BigInt pow(const BigInt &a, const BigInt &b, const BigInt& modulo) {
     BigInt ans = BigInt("1");
     BigInt n = b;
+    BigInt mult = a;
     while (n > BigInt("0")) {
+        cout << ans <<' ' << mult <<' '<< n<< endl;
         BigInt p = n % BigInt("2");
         n = n / BigInt("2");
         if (p == BigInt("1")) {
-            if (modulo > BigInt("1"))
-                return (a * pow(a, n) * pow(a, n)) % modulo;
-            return a * pow(a, n) * pow(a, n);
+            ans = ans * mult;
+            //if (modulo > BigInt("1"))
+                ans = ans % modulo;
         }
-        if (modulo > BigInt("1"))
-            return (pow(a, n) * pow (a, n)) % modulo;
-        return pow(a, n) * pow (a, n);
+        mult = mult * mult;
+        //if (modulo > BigInt("1"))
+            mult = mult % modulo;
     }
-    return ans;
+    return ans % modulo;
+    //return modulo > BigInt("1") ? ans % modulo : ans;
 }
 const BigInt sqrt(const BigInt &a) {
     if (!a.sign) {
@@ -239,26 +241,11 @@ ostream &operator <<(ostream &out, const BigInt &a) {
     return out;
 }
 
-    //+ - * / % by mod
-const BigInt add(const BigInt &a, const BigInt &b, const BigInt &modulo) {
-    if (modulo > 1)
-        return (a % modulo + b % modulo) % modulo;
-    retur a + b;
-}
-const BigInt sub(const BigInt &a, const BigInt &b, const BigInt &modulo) {
-    if (modulo > 1)
-        return (a % modulo - b % modulo) % modulo;
-    retur a - b;
-}
-const BigInt mult(const BigInt &a, const BigInt &b, const BigInt &modulo) {
-    if (modulo > 1)
-        return (a * b) % modulo;
-    retur a * b;
-}
-const BigInt div(const BigInt &a, const BigInt &b, const BigInt &modulo) {
-    if (modulo > 1)
-        return (a / b) % modulo;
-    retur a / b;
+istream &operator >>(istream &in, BigInt &a) {
+    string s;
+    in >> s;
+    a = BigInt(s);
+    return in;
 }
 
 void BigInt::removeLeadingZeros() {
@@ -285,9 +272,17 @@ const int findDigit(const BigInt& delta, const BigInt& num) {
             r = m;
         }
     }
+    cout << l <<"or"<<r<<endl;
     if (delta * r <= num) {
         return r;
     }
     return l;
 }
 
+const BigInt gcd(const BigInt& a, const BigInt& b) {
+    if (a < b)
+        return gcd(b, a);
+    if (b == BigInt("0"))
+        return a;
+    return (b, a % b);
+}

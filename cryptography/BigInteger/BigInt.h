@@ -43,15 +43,10 @@ public:
     bool operator == (const BigInt &a) const;
     bool operator != (const BigInt &a) const;
 
-    //+ - * / % by mod
-    friend const BigInt add(const BigInt &a, const BigInt &b, const BigInt &modulo);
-    friend const BigInt sub(const BigInt &a, const BigInt &b, const BigInt &modulo);
-    friend const BigInt mult(const BigInt &a, const BigInt &b, const BigInt &modulo);
-    friend const BigInt div(const BigInt &a, const BigInt &b, const BigInt &modulo);
-
     // output in console
     friend ostream &operator <<(ostream &out, const BigInt &a);
-
+    friend istream &operator >>(istream &in, BigInt &a);
 };
 const int findDigit(const BigInt& delta, const BigInt& num);
+const BigInt gcd(const BigInt& a, const BigInt& b);
 
