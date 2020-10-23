@@ -74,29 +74,20 @@ void process() {
     if (cin>>command) {
         BigInt ans;
         if (command == "equation") {
-            cout << "Input in format < ai mi > on each line. Print done to stop input" << endl;
-            vector<vector<BigInt>> matrix(0);
-            while (true) {
-                string s;
-                cin >> s;
-                if (s == "done")
-                    break;
-                else
-                    a = BigInt(s);
-                if (cin >> b) {
-                    vector<BigInt> line(0);
-                    line.push_back(a);
-                    line.push_back(b);
-                    matrix.push_back(line);
-                }
-                else
-                    break;
+            int c, d, n;
+            cout << "Input number of equations." << endl;
+            vector<int> r(0);
+            vector<int> m(0);
+            cin >> n;
+            cout << "Input coefs in format < ai mi > on each line. Print done to stop input" << endl;
+            while (n > 0) {
+                cin >> c >> d;
+                r.push_back(c);
+                m.push_back(d);
+                n--;
             }
-            if (systemOfEquation(matrix, ans)) {
+            ans = systemOfEquation(r,m);
                 cout << ans;
-            }
-            else
-                error();
         }
         else {
             if (command == "exit")
@@ -159,6 +150,9 @@ void process() {
             cout << ans << endl;
         }
     }
-    else
+    else{
         error();
+        return;
+    }
+
 }
