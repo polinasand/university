@@ -48,5 +48,5 @@ public:
 const int findDigit(const BigInt& delta, const BigInt& num);
 const BigInt gcd(const BigInt& a, const BigInt& b, BigInt& x, BigInt& y);
 bool congrEquation(const BigInt& a, const BigInt& b, const BigInt& m, vector<BigInt>& result);
-
+bool systemOfEquation(const vector<vector<BigInt>> &matrix, BigInt &ans);
 

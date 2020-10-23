@@ -3,20 +3,20 @@
 #include "BigInt.h"
 using namespace std;
 
-void hello();
+void info();
 void error();
 void process();
 bool processLine(BigInt &, BigInt &, BigInt &);
 
 int main()
 {
-    while (true) {
-        hello();
-    }
+    info();
+    while (true)
+        process();
     return 0;
 }
 
-void hello() {
+void info() {
     cout << "------"<< endl;
     cout << "Choose some option. [] means that parameter is optional.\n";
     cout << "a, b - arguments, p - modulo. Input numbers in format 9, -1766, 0, 2345634545411983." << endl;
@@ -28,11 +28,11 @@ void hello() {
     cout << "sqrt a" << endl;
     cout << "pow a b [p]" << endl;
     cout << "abs a" << endl;
-    cout << "** to solve equation ax = b (mod m) **" << endl;
-    cout << "equation a b m" << endl;
+    cout << "** to solve system of equations equation x = ai (mod mi) **" << endl;
+    cout << "equation" << endl;
+    cout << "info" << endl;
     cout << "exit" << endl;
     cout << "------"<< endl;
-    process();
 }
 void error() {
     cout << "Wrong input!" << endl;
@@ -74,19 +74,38 @@ void process() {
     if (cin>>command) {
         BigInt ans;
         if (command == "equation") {
-            if (processLine(a, b, p)) {
-                vector<BigInt> result(0);
-                if (congrEquation(a, b, p, result)){
-                    for (auto x : result)
-                        cout << x << endl;
+            cout << "Input in format < ai mi > on each line. Print done to stop input" << endl;
+            vector<vector<BigInt>> matrix(0);
+            while (true) {
+                string s;
+                cin >> s;
+                if (s == "done")
+                    break;
+                else
+                    a = BigInt(s);
+                if (cin >> b) {
+                    vector<BigInt> line(0);
+                    line.push_back(a);
+                    line.push_back(b);
+                    matrix.push_back(line);
                 }
+                else
+                    break;
+            }
+            if (systemOfEquation(matrix, ans)) {
+                cout << ans;
             }
             else
                 error();
         }
         else {
             if (command == "exit")
-            exit(0);
+                exit(0);
+            if (command == "info") {
+                info();
+                return;
+            }
+
             if (command == "add") {
                 if (processLine(a, b, p))
                     ans = (a + b) % p;

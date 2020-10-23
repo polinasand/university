@@ -310,3 +310,26 @@ bool congrEquation(const BigInt& a, const BigInt& b, const BigInt& m, vector<Big
     return true;
 }
 
+bool systemOfEquation(const vector<vector<BigInt>> &matrix, BigInt &ans) {
+    BigInt M = BigInt("1");
+    for (auto equation : matrix) {
+        M = M * equation[1];
+    }
+    BigInt x, y, a, m, b;
+    BigInt d, val = BigInt("0");
+    for (auto equation : matrix) {
+        m = equation[1];
+        a = M / m;
+        b = BigInt("1");
+        d = gcd(a, m, x, y);
+        if (a < BigInt("0"))
+            x = -x;
+        x = x * (b / d);
+        x = x % m;
+        if (m % d != BigInt("0"))
+            return false;
+        val = val + x * a * equation[0];
+    }
+    ans = val % M;
+    return true;
+}
