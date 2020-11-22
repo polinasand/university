@@ -22,6 +22,19 @@ BigInt::BigInt(const string & s) {
     this->removeLeadingZeros();
 }
 
+BigInt::BigInt(int n) {
+    this->sign = n >=0 ? true : false;
+    if (n == 0)
+        this->bits.push_back(0);
+    else {
+        while (n > 0) {
+            this->bits.push_back(n % BigInt::base);
+            n /= BigInt::base;
+        }
+    }
+    this->removeLeadingZeros();
+}
+
 BigInt::BigInt(const vector<int> &bits, const bool &sign) {
     this->sign = sign;
     this->bits = bits;
@@ -115,12 +128,12 @@ const BigInt operator * (const BigInt &a, const int b) {
 }
 
 const BigInt operator / (const BigInt &a, const BigInt &b) {
-    if (b == BigInt("0")) {
+    if (b == BigInt(0)) {
         cout << "No division by 0" << endl;
         return a;
     }
     if (abs(a) < abs(b)){
-        return BigInt("0");
+        return BigInt(0);
     }
     BigInt delta(vector<int>(b.bits.size()), true);
     vector<int> ans = vector<int>();
@@ -138,21 +151,21 @@ const BigInt operator / (const BigInt &a, const BigInt &b) {
 }
 
 const BigInt operator % (const BigInt &a, const BigInt &b) {
-    if (b <= BigInt("0")) {
+    if (b <= BigInt(0)) {
         return a;
     }
     BigInt ans = a - b * (a / b);
-    return ans >= BigInt("0") ? ans : ans + b;
+    return ans >= BigInt(0) ? ans : ans + b;
 }
 
 const BigInt pow(const BigInt &a, const BigInt &b, const BigInt& modulo) {
-    BigInt ans = BigInt("1");
+    BigInt ans = BigInt(1);
     BigInt n = b;
     BigInt mult = a;
-    while (n > BigInt("0")) {
-        BigInt p = n % BigInt("2");
-        n = n / BigInt("2");
-        if (p == BigInt("1")) {
+    while (n > BigInt(0)) {
+        BigInt p = n % BigInt(2);
+        n = n / BigInt(2);
+        if (p == BigInt(1)) {
             ans = ans * mult;
             ans = ans % modulo;
         }
@@ -168,8 +181,8 @@ const BigInt sqrt(const BigInt &a) {
     }
     BigInt l = BigInt(), r = a;
     BigInt m;
-    while (l + BigInt("1") < r) {
-        m = (l + r) / BigInt("2");
+    while (l + BigInt(1) < r) {
+        m = (l + r) / BigInt(2);
         if (m * m == a) {
             return m;
         }
@@ -280,9 +293,9 @@ const int findDigit(const BigInt& delta, const BigInt& num) {
 }
 
 const BigInt gcd(const BigInt& a, const BigInt& b, BigInt& x, BigInt& y) {
-    if (a == BigInt("0")) {
-		x = BigInt("0");
-		y = BigInt("1");
+    if (a == BigInt(0)) {
+		x = BigInt(0);
+		y = BigInt(1);
 		return b;
 	}
 	BigInt x1, y1;
@@ -292,17 +305,25 @@ const BigInt gcd(const BigInt& a, const BigInt& b, BigInt& x, BigInt& y) {
 	return d;
 }
 
+const BigInt gcd(const BigInt& a, const BigInt& b) {
+    if (a > b)
+        return gcd(b, a);
+    if (a == BigInt(0))
+		return b;
+	return gcd (b % a, a);
+}
+
 bool congrEquation(const BigInt& a, const BigInt& b, const BigInt& m, vector<BigInt>& result) {
     BigInt x, y;
     BigInt d = gcd(a, m, x, y);
-    if (a < BigInt("0"))
+    if (a < BigInt(0))
         x = -x;
     x = x * (b / d);
     x = x % m;
-    if (m % d != BigInt("0"))
+    if (m % d != BigInt(0))
         return false;
     result.push_back(x);
-    for (BigInt i = BigInt("1"); i < d; i = i + BigInt("1")) {
+    for (BigInt i = BigInt(1); i < d; i = i + BigInt(1)) {
         x = x + m / d;
         x = x % m;
         result.push_back(x);
@@ -314,7 +335,7 @@ const BigInt systemOfEquation(const vector<int> &remainders, const vector<int> &
     int n = remainders.size();
 	vector<vector<int>> inverse = vector<vector<int>>();
 	inverse.resize(n);
-	BigInt result("0"), multiplier("1");
+	BigInt result(0), multiplier(1);
 	for (int i = 0; i < n; i++){
 		inverse[i].resize(n);
 		for(int j = i + 1; j < n; j++){

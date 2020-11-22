@@ -14,6 +14,7 @@ private:
 public:
     BigInt();
     BigInt(const string &s);
+    BigInt(int n);
     BigInt(const vector<int> &bits, const bool &sign);
     bool sign = true; // >=0
     const static int base = 10;
@@ -48,6 +49,7 @@ public:
 
 const int findDigit(const BigInt& delta, const BigInt& num);
 const BigInt gcd(const BigInt& a, const BigInt& b, BigInt& x, BigInt& y);
+const BigInt gcd(const BigInt& a, const BigInt& b);
 bool congrEquation(const BigInt& a, const BigInt& b, const BigInt& m, vector<BigInt>& result);
 const BigInt systemOfEquation(const vector<int> &r, const vector<int> &m);
 int powModP(int a, int n, int p);

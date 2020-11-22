@@ -62,7 +62,7 @@ bool processLine(BigInt &a, BigInt &b, BigInt &p) {
         return false;
     a = BigInt(nums[0]);
     b = BigInt(nums[1]);
-    p = BigInt("0");
+    p = BigInt(0);
     if (counter == 2)
         p = BigInt(nums[2]);
     return true;
