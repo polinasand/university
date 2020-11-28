@@ -40,11 +40,63 @@ const int Cryptography::jacobi(const BigInt& a, const BigInt& m) {
     return ans;
 }
 
-const BigInt Cryptography::discrete_log(const BigInt& n) {
-    return BigInt("1");
+// Baby-step-giant-step
+const BigInt Cryptography::discrete_log(const BigInt& g, const BigInt& b, const BigInt& n) {
+    BigInt m = sqrt(n) + BigInt(1);
+    BigInt gM = pow(g, m, n),p = BigInt(1);
+    BigInt i, j;
+    // all values for j
+    map<BigInt, BigInt> rvals = map<BigInt, BigInt>();
+    rvals[p] = BigInt(0);
+    for (j = BigInt(1); j < m; j = j + BigInt(1)) {
+        p = (p * g) % n;
+        rvals[p] = j;
+        if (p == g)
+            return (-j) % n;
+    }
+    p = BigInt(1);
+    for (i = BigInt(1); i < m; i = i + BigInt(1)) {
+        p = (p * gM) % n;
+        auto it = rvals.find((inverseEl(b, n)*p)%n);
+        if (it != rvals.end()){
+            return i*m - it->second;
+        }
+    }
+    return BigInt("-1");
 }
-const BigInt Cryptography::discrete_sqrt(const BigInt& n) {
-    return BigInt("1");
+
+// find inverse element in group by modulo p
+const BigInt Cryptography::inverseEl(const BigInt&a, const BigInt&p) {
+    BigInt _a = a % p;
+    BigInt x, y;
+    BigInt d = gcd(_a, p, x, y);
+    if (d > 1)
+        return p;
+    return x % p;
+}
+
+// Cippola
+const BigInt Cryptography::discrete_sqrt(const BigInt& a, const BigInt& p) {
+    if (a == BigInt(0))
+        return a;
+    BigInt w = BigInt(1), b = BigInt(1);
+    while (legendre(w,p) == 1/* && b < p*/) {
+        b = random(p);
+        w = (b*b - a) % p;
+        if (w == BigInt(0))
+            return b;
+    }
+    /*if (b == p)
+        return BigInt("-1");*/
+    BigInt deg = (p+BigInt(1))/BigInt(2), wi = BigInt(1), bi = pow(b, deg, p), ci = BigInt(1);
+	BigInt result = (wi * ci * bi) % p;
+	for (BigInt i = BigInt(2); i <= deg; i = i + BigInt(2)){
+		wi = (wi * w) % p;
+		bi = pow(b, deg - i, p);
+		ci = (ci * (deg - i + BigInt(2)) * (deg - i + BigInt(1))) * inverseEl((i - BigInt(1)) * i, p) % p;
+		result = (result + ci * bi * wi) % p;
+	}
+	return result == BigInt(0) ? BigInt("-1") : result;
 }
 
 // Miller-Rabin
@@ -98,8 +150,8 @@ BigInt trivialFactor(const BigInt& n) {
 }
 
 // Pollard's algorithm
-const BigInt findFactor(const BigInt& n, BigInt x0) {
-    BigInt x_0 = x0, x_i = f(x_0) % n, x_2i = f(x_i) % n, d = BigInt(1);
+const BigInt findFactor(const BigInt& n) {
+    BigInt x_0 = BigInt(2), x_i = f(x_0) % n, x_2i = f(x_i) % n, d = BigInt(1);
     int max_iter = 1000, i = 0;
     while (i < max_iter && (d == BigInt(1) || d == n)) {
         d = gcd(n, abs(x_i - x_2i));
@@ -119,29 +171,17 @@ const void Cryptography::factor(const BigInt& n, map<BigInt, int>& factors) {
     if (isPrime(n)) {
         auto it = factors.find(n);
         if (it != factors.end()) {
-            int power = it->second;
-            factors.insert(pair<BigInt, int>(n, power+1));
+            it->second++;
         }
         else {
-            factors.insert(pair<BigInt, int>(n, 1));
+            factors[n] = 1;
         }
         return;
     }
     BigInt d = BigInt(1);
-    BigInt i = BigInt(2);
     while (d == BigInt(1) || d == n) {
-        d = findFactor(n, i);
-        i = i + BigInt(1);
+        d = findFactor(n);
     }
-
-    auto it = factors.find(d);
-        if (it != factors.end()) {
-            int power = it->second;
-            factors.insert(pair<BigInt, int>(d, power+1));
-        }
-        else {
-            factors.insert(pair<BigInt, int>(d, 1));
-        }
-    cout << d << endl;
     factor(n/d, factors);
+    factor(d, factors);
 }
