@@ -18,4 +18,5 @@ public:
     static const BigInt discrete_sqrt(const BigInt&, const BigInt&);
     static const void factor(const BigInt&, map<BigInt, int>&);
     static const BigInt inverseEl(const BigInt&, const BigInt&);
+    static const BigInt factorLenstra(const BigInt&);
 };

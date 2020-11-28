@@ -32,6 +32,7 @@ void info() {
     cout << "Sum of two points on elliptic curve: ell x1 y1 z1 x2 y2 z2 a b n (z == 0 if Point is zero, else Point is not zero)" << endl;
     cout << "Add k times Point p: sell x y z k a b n"<< endl;
     cout << "El-Gamal cryptosystem: elgamal" << endl;
+    cout << "Lenstra: len n" << endl;
     cout << "info" << endl;
     cout << "exit" << endl;
     cout << "------"<< endl;
@@ -177,6 +178,8 @@ void process() {
                 cout << "Input some message" << endl;
                 string message;
                 getline(cin, message);
+                if (message.size() == 0)
+                    continue;
                 vector<pair<Point, Point>> points;
                 vector<Point> mPoints;
                 elGamal.encrypt(message, points);
@@ -184,8 +187,11 @@ void process() {
                 string ans = elGamal.makeString(mPoints);
                 cout << "Message: " << ans << endl;
             }
-
-    }
+        }
+        if (command == "len") {
+            cin >> a;
+            cout << Cryptography::factorLenstra(a) << endl;
+        }
     }
     else{
         error();

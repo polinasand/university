@@ -46,8 +46,10 @@ private:
 
 public:
     ElGamal();
+    ElGamal(curve e, Point P);
     map<int, Point> intToPoint;
     const Point add(const Point&, const Point&, const curve&);
+    const Point addV(const Point&, const Point&, const curve&, BigInt&);
     const Point mult(const Point&, const BigInt&, const curve&);
     const void encrypt(const string&, vector<pair<Point, Point>>&);
     const void decrypt(const vector<pair<Point, Point>>& , vector<Point>& );

@@ -1,4 +1,5 @@
 #include "ElGamal.h"
+#include "BigInt/BigInt.h"
 #include "Cryptography.h"
 
 using namespace std;
@@ -23,6 +24,11 @@ ElGamal::ElGamal() {
     }
     cout << "Keys created" << endl;
 }
+
+ElGamal::ElGamal(curve e, Point P) {
+    this->e = e;
+    this->P = P;
+}
 const Point ElGamal::add(const Point& P, const Point& Q, const curve& e) {
     if (P.zero) return Q;
     if (Q.zero) return P;
@@ -31,10 +37,37 @@ const Point ElGamal::add(const Point& P, const Point& Q, const curve& e) {
         R.zero = true;
         return R;
     }
-    BigInt m, n;
+    BigInt m;
     if (P.x == Q.x && P.y == Q.y && P.y != BigInt(0)) {
         m = (BigInt(3)*P.x*P.x + e.a) * Cryptography::inverseEl(BigInt(2) * P.y, e.n);
     } else {
+        m = (Q.y - P.y)*Cryptography::inverseEl(Q.x - P.x, e.n);
+    }
+    m = m % e.n;
+    R.x = (m*m - (P.x + Q.x));
+	R.y = -P.y + m * (P.x - R.x);
+	R.x = R.x % e.n;
+	R.y = R.y % e.n;
+    return R;
+}
+
+const Point ElGamal::addV(const Point&P , const Point&Q, const curve& e, BigInt& d){
+    if (P.zero) return Q;
+    if (Q.zero) return P;
+    Point R = Point(BigInt(0), BigInt(1), false);
+    if (P.x == Q.x && (P.y != Q.y || (P.y == BigInt(0) && Q.y == BigInt(0)))){
+        R.zero = true;
+        return R;
+    }
+    BigInt m, x, y;
+    d = BigInt(1);
+    if (P.x == Q.x && P.y == Q.y && P.y != BigInt(0)) {
+        if (gcd(BigInt(2) * P.y, e.n, x, y) > d)
+            d = gcd(BigInt(2) * P.y, e.n, x, y);
+        m = (BigInt(3)*P.x*P.x + e.a) * Cryptography::inverseEl(BigInt(2) * P.y, e.n);
+    } else {
+        if (gcd(Q.x - P.x, e.n, x, y) > d)
+            d = gcd(Q.x - P.x, e.n, x, y);
         m = (Q.y - P.y)*Cryptography::inverseEl(Q.x - P.x, e.n);
     }
     m = m % e.n;
@@ -66,7 +99,7 @@ const void ElGamal::encrypt(const string& m, vector<pair<Point, Point>>& points)
         cout << "Point M = (" << M.x << ' ' << M.y <<")"<< endl;
         Point g = add(P, P, e);
         Point h = ElGamal::add(M, ElGamal::add(Y, Y, e), e);
-        cout << "ciphertext: g = (" << g.x << ' ' << g.y << ") h = (" << h.x << ' ' << h.y <<")"<< endl;
+        cout << "Ciphertext: g = (" << g.x << ' ' << g.y << ") h = (" << h.x << ' ' << h.y <<")"<< endl;
         points.push_back(pair<Point, Point>(g,h));
     }
 }
@@ -78,7 +111,7 @@ const void ElGamal::decrypt(const vector<pair<Point, Point>>& cPoints, vector<Po
         Point S = mult(it->first, k, e);
         S.y = (-S.y) % ElGamal::e.n;
         Point ansM = ElGamal::add(S, it->second, ElGamal::e);
-        cout << "Created point for symbol " << i << endl;
+        cout << "Symbol " << i << " is decrypted" << endl;
         i++;
         mPoints.push_back(ansM);
     }

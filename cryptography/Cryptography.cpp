@@ -1,4 +1,5 @@
 #include "Cryptography.h"
+#include "ElGamal.h"
 using namespace std;
 
 const BigInt Cryptography::euler(const BigInt& n) {
@@ -80,14 +81,12 @@ const BigInt Cryptography::discrete_sqrt(const BigInt& a, const BigInt& p) {
     if (a == BigInt(0))
         return a;
     BigInt w = BigInt(1), b = BigInt(1);
-    while (legendre(w,p) == 1/* && b < p*/) {
+    while (legendre(w,p) == 1) {
         b = BigInt::random(p);
         w = (b*b - a) % p;
         if (w == BigInt(0))
             return b;
     }
-    /*if (b == p)
-        return BigInt("-1");*/
     BigInt deg = (p+BigInt(1))/BigInt(2), wi = BigInt(1), bi = pow(b, deg, p), ci = BigInt(1);
 	BigInt result = (wi * ci * bi) % p;
 	for (BigInt i = BigInt(2); i <= deg; i = i + BigInt(2)){
@@ -184,4 +183,27 @@ const void Cryptography::factor(const BigInt& n, map<BigInt, int>& factors) {
     }
     factor(n/d, factors);
     factor(d, factors);
+}
+
+const BigInt Cryptography::factorLenstra(const BigInt& _n)
+{
+    Point P = Point(BigInt(6997), BigInt(143519), false);
+    BigInt n = _n, b = (P.y*P.y - pow(P.x, BigInt(3), n)) % n;
+    curve e = curve(BigInt(0), b, n);
+    ElGamal elGamal = ElGamal(e, P);
+    BigInt i = BigInt(30);
+    BigInt t = BigInt(1);
+    while (i > BigInt(1)) {
+        t = t * i;
+        i = i - BigInt(1);
+    }
+    Point S = P;
+    BigInt ans;
+    while (t > BigInt(1)) {
+        S = elGamal.addV(S, P, e, ans);
+        if (ans > BigInt(1))
+            return ans;
+        t = t - BigInt(1);
+    }
+    return BigInt(1);
 }
