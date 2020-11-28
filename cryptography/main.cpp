@@ -141,8 +141,9 @@ void process() {
         }
         if (command == "ell") {
             BigInt x1, x2, y1, y2, z1, z2;
+            ElGamal elGamal = ElGamal();
             if (cin >> x1 >> y1 >> z1 >> x2 >> y2 >> z2 >> a >> b >>c) {
-                Point ans = ElGamal::add(
+                Point ans = elGamal.add(
                                          Point(x1 % c, y1 % c, z1 == BigInt(0) ? true : false),
                                          Point(x2 % c, y2 % c, z2 == BigInt(0) ? true : false),
                                          curve(a, b, c));
@@ -155,16 +156,13 @@ void process() {
                 error();
         }
         if (command == "sell") {
+                ElGamal elGamal = ElGamal();
             BigInt x, y, z, k;
             if (cin >> x >> y >> z >> k >> a >> b >>c) {
-                Point ans = Point(x, y, z == BigInt(0) ? true : false);
-                while (k > BigInt(1)) {
-                   ans = ElGamal::add(
+                Point ans = elGamal.mult(
                                          Point(x % c, y % c, z == BigInt(0) ? true : false),
-                                         Point(ans.x % c, ans.y % c, ans.zero),
+                                         k,
                                          curve(a, b, c));
-                    k = k - BigInt(1);
-                }
                 if (ans.zero)
                     cout << "zero\n";
                 else
@@ -174,7 +172,19 @@ void process() {
                 error();
         }
         if (command == "elgamal") {
-            ElGamal::elGamal();
+            ElGamal elGamal = ElGamal();
+            while (true) {
+                cout << "Input some message" << endl;
+                string message;
+                getline(cin, message);
+                vector<pair<Point, Point>> points;
+                vector<Point> mPoints;
+                elGamal.encrypt(message, points);
+                elGamal.decrypt(points, mPoints);
+                string ans = elGamal.makeString(mPoints);
+                cout << "Message: " << ans << endl;
+            }
+
     }
     }
     else{

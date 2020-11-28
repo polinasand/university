@@ -81,7 +81,7 @@ const BigInt Cryptography::discrete_sqrt(const BigInt& a, const BigInt& p) {
         return a;
     BigInt w = BigInt(1), b = BigInt(1);
     while (legendre(w,p) == 1/* && b < p*/) {
-        b = random(p);
+        b = BigInt::random(p);
         w = (b*b - a) % p;
         if (w == BigInt(0))
             return b;
