@@ -52,7 +52,7 @@ const BigInt Cryptography::discrete_log(const BigInt& g, const BigInt& b, const 
     for (j = BigInt(1); j < m; j = j + BigInt(1)) {
         p = (p * g) % n;
         rvals[p] = j;
-        if (p == g)
+        if (p == g && (-j) % n != n-BigInt(1))
             return (-j) % n;
     }
     p = BigInt(1);
@@ -60,7 +60,8 @@ const BigInt Cryptography::discrete_log(const BigInt& g, const BigInt& b, const 
         p = (p * gM) % n;
         auto it = rvals.find((inverseEl(b, n)*p)%n);
         if (it != rvals.end()){
-            return i*m - it->second;
+            if (i*m - it->second != n-BigInt(1))
+                return  i*m - it->second;
         }
     }
     return BigInt("-1");

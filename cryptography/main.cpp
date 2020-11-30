@@ -20,7 +20,6 @@ int main()
 void info() {
     cout << "------"<< endl;
     cout << "Choose some option.\n";
-    cout << "a, b - arguments, p - modulo. Input numbers in format 9, -1766, 0, 2345634545411983." << endl;
     cout << "Euler function: eul a"<< endl;
     cout << "Mobius function: mob a" << endl;
     cout << "Legendre symbol: leg a p" << endl;
@@ -190,7 +189,8 @@ void process() {
         }
         if (command == "len") {
             cin >> a;
-            cout << Cryptography::factorLenstra(a) << endl;
+            b = Cryptography::factorLenstra(a);
+            cout << b << ' ' << a/b << endl;
         }
     }
     else{
