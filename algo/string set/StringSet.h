@@ -11,7 +11,7 @@ struct link{
 class StringSet {
     private:
         link* first;
-        const unsigned long long m = pow(2, 32);
+        const unsigned long long m = pow(2, 60);
         long long p;
         int capacity = 0;
         int MAX_SIZE = 1000000;

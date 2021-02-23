@@ -8,11 +8,13 @@ int main()
     StringSet newSet;
     string s;
     while(getline(cin, s)) {
+        s.replace(min(15, (int)s.size()), s.size(), "");
         char sign = s[0];
         s.replace(0, 2, "");
         bool ans;
         switch(sign) {
         case '#':
+            newSet.iterate();
             return 0;
             break;
         case '+':
@@ -28,7 +30,6 @@ int main()
             break;
         }
         cout << (ans ? "true" : "false") << endl;
-        newSet.iterate();
     }
 
        return 0;
