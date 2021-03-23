@@ -148,6 +148,15 @@ void process() {
                     error();
             }
             cout << ans << endl;
+            ans.toBase2();
+            ans.toBase64();
+            for (int i=0; i<ans.bits2.size(); i++){
+                cout << ans.bits2[ans.bits2.size()-i-1];
+            }
+            cout << endl;
+            for (int i=0; i<ans.bits64.size(); i++){
+                cout <<(char)ans.bits64[ans.bits64.size()-i-1];
+            }
         }
     }
     else{

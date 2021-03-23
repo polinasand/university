@@ -14,6 +14,8 @@ public:
     static const int legendre(const BigInt&, const BigInt&);
     static const int jacobi(const BigInt&, const BigInt&);
     static const bool isPrime(const BigInt&);
+    static const bool isPrimeBPSW(const BigInt&);
+    static const bool isPrimeLuke(const BigInt&, const BigInt&, const BigInt&, const BigInt&);
     static const BigInt discrete_log(const BigInt&, const BigInt&, const BigInt&);
     static const BigInt discrete_sqrt(const BigInt&, const BigInt&);
     static const void factor(const BigInt&, map<BigInt, int>&);

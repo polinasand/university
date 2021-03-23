@@ -276,6 +276,47 @@ void BigInt::removeLeadingZeros() {
     }
 }
 
+void BigInt::toBase2(){
+    if (this->bits2.size() < 1){
+        BigInt t = BigInt(this->bits, this->sign);
+        while (t > BigInt(0)){
+            this->bits2.push_back(t % BigInt(2) == BigInt(0) ? 0 : 1);
+            t = t / BigInt(2);
+        }
+    }
+}
+
+void BigInt::toBase64(){
+    if (this->bits64.size() < 1){
+        BigInt t = BigInt(this->bits, this->sign);
+        while (t > 0){
+            BigInt v = t % BigInt(64);
+            int val = v.bits[0] + v.bits[1] * BigInt::base, add = val;
+            switch(val) {
+                case 0 ... 25:
+                    add += 65;
+                    break;
+                case 26 ... 51:
+                    add += (97-26);
+                    break;
+                case 52 ... 61:
+                    add += (48-52);
+                    break;
+                case 62:
+                    add += (43-62);
+                    break;
+                case 63:
+                    add += (47-63);
+                    break;
+                default:
+                    break;
+            }
+            this->bits64.push_back(add);
+            t = t / BigInt(64);
+        }
+    }
+}
+
 const int findDigit(const BigInt& delta, const BigInt& num) {
     int l = 0, r = BigInt::base - 1;
     while (l + 1 < r) {
@@ -362,4 +403,16 @@ int powModP(int a, int n, int p){
 	int tmp = powModP(a, n/2, p) % p;
 	return (tmp * tmp) % p;
 
+}
+
+const BigInt BigInt::random(const BigInt& p) {
+    vector<int> bits = vector<int>(0);
+    int s = rand() % p.bits.size() + 1;
+    for (int i = 0; i < s; i++) {
+        bits.push_back(rand() % BigInt::base);
+    }
+    BigInt ans = BigInt(bits, true);
+    if (ans >= p)
+        ans = ans % p;
+    return ans;
 }

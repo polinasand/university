@@ -25,6 +25,7 @@ void info() {
     cout << "Legendre symbol: leg a p" << endl;
     cout << "Jacobi symbol: jac a p" << endl;
     cout << "is Prime with probability > 1 - 4^(1-N), N = 20: prime a" << endl;
+    cout << "is Prime BPSW: primeB a" << endl;
     cout << "Discrete log: solution for g^x = b mod p: log g b p" << endl;
     cout << "Discrete sqrt: solution for x^2 = a mod p: sqrt a p" << endl;
     cout << "Factor number: factor a" << endl;
@@ -111,6 +112,14 @@ void process() {
         if (command == "prime") {
             if (processLine(a, b, c)){
                 string ans = Cryptography::isPrime(a) ? "true" : "false";
+                cout << ans << endl;
+            }
+            else
+                error();
+        }
+        if (command == "primeB") {
+            if (processLine(a, b, c)){
+                string ans = Cryptography::isPrimeBPSW(a) ? "true" : "false";
                 cout << ans << endl;
             }
             else

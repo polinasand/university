@@ -133,6 +133,56 @@ const bool Cryptography::isPrime(const BigInt& a) {
     }
     return true;
 }
+// Baillie - PSW prime test
+const bool Cryptography::isPrimeBPSW(const BigInt& a) {
+    if (Cryptography::isPrime(a) == false)
+        return false;
+    cout << "Checked Miller-Rabin\n";
+    BigInt d = BigInt(5);
+    int i = 0;
+    while (true){
+        if (Cryptography::legendre(d, a) == -1){
+            cout << "Found d in BPSW algo\n";
+            break;
+        }
+        d = d + BigInt(2);
+        i++;
+        d = d * (i%2 ? BigInt(-1) : BigInt(1));
+    }
+    return Cryptography::isPrimeLuke(a, d, BigInt(1), (BigInt(1)-d)/BigInt(4));
+}
+
+// Luke prime test
+const bool Cryptography::isPrimeLuke(const BigInt& n, const BigInt& d, const BigInt& p, const BigInt& q) {
+    BigInt k = n, t, _v, add;
+    BigInt u = BigInt(1);
+    BigInt v = p;
+    while (k > BigInt(0)){
+        t = k % BigInt(2);
+        k = k / BigInt(2);
+        _v = u;
+        u = u*v;
+        v = (v*v +d*u*u)/BigInt(2);
+        if (t == BigInt(1)){
+            add = p*u + v;
+            _v = v;
+            if (add % BigInt(2) == BigInt(1))
+                add = add + n;
+            u = add / BigInt(2);
+            add = d * u + p*v;
+            if (add % BigInt(2) == BigInt(1))
+                add = add + n;
+            v = add / BigInt(2);
+        }
+        u = u % n;
+        v = v % n;
+    }
+    add = p*u + v;
+    if (add % BigInt(2) == BigInt(1))
+        add = add + n;
+    u = add / BigInt(2);
+    return u % n == BigInt(0);
+}
 
 // help function for Pollard's algorithm
 const BigInt f(const BigInt& x) {

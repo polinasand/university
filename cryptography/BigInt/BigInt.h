@@ -18,8 +18,14 @@ public:
     BigInt(const vector<int> &bits, const bool &sign);
     bool sign = true; // >=0
     const static int base = 10;
-    vector<int> bits = vector<int>();
 
+    // base
+    vector<int> bits = vector<int>(); // base10
+    vector<int> bits2 = vector<int>(); // base2
+    vector<int> bits64 = vector<int>();
+
+    void toBase2();
+    void toBase64();
     // -
     friend const BigInt operator - (const BigInt &a);
 
@@ -45,6 +51,8 @@ public:
     // output in console
     friend ostream &operator <<(ostream &out, const BigInt &a);
     friend istream &operator >>(istream &in, BigInt &a);
+
+    static const BigInt random(const BigInt&);
 };
 
 const int findDigit(const BigInt& delta, const BigInt& num);
@@ -53,4 +61,5 @@ const BigInt gcd(const BigInt& a, const BigInt& b);
 bool congrEquation(const BigInt& a, const BigInt& b, const BigInt& m, vector<BigInt>& result);
 const BigInt systemOfEquation(const vector<int> &r, const vector<int> &m);
 int powModP(int a, int n, int p);
+
 
