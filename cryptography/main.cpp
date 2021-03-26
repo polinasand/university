@@ -2,6 +2,7 @@
 #include "BigInt/BigInt.cpp"
 #include "Cryptography.h"
 #include "ElGamal.h"
+#include "prime_gen.h"
 
 using namespace std;
 
@@ -33,6 +34,7 @@ void info() {
     cout << "Add k times Point p: sell x y z k a b n"<< endl;
     cout << "El-Gamal cryptosystem: elgamal" << endl;
     cout << "Lenstra: len n" << endl;
+    cout << "generate prime of len n: gen n" << endl;
     cout << "info" << endl;
     cout << "exit" << endl;
     cout << "------"<< endl;
@@ -200,6 +202,12 @@ void process() {
             cin >> a;
             b = Cryptography::factorLenstra(a);
             cout << b << ' ' << a/b << endl;
+        }
+        if (command == "gen") {
+            int n;
+            cin >> n;
+            b = prime_gen::nextPrime(n);
+            cout << b << endl;
         }
     }
     else{
