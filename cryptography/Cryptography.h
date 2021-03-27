@@ -21,4 +21,6 @@ public:
     static const void factor(const BigInt&, map<BigInt, int>&);
     static const BigInt inverseEl(const BigInt&, const BigInt&);
     static const BigInt factorLenstra(const BigInt&);
+    //static void assert(bool received, bool expected, std::string num);
+    static void test();
 };

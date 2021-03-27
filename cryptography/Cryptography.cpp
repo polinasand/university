@@ -135,13 +135,15 @@ const bool Cryptography::isPrime(const BigInt& a) {
 }
 // Baillie - PSW prime test
 const bool Cryptography::isPrimeBPSW(const BigInt& a) {
+    if (a == BigInt(2) || a == BigInt(3) || a == BigInt(5) || a == BigInt(7))
+        return true;
     if (Cryptography::isPrime(a) == false)
         return false;
     cout << "Checked Miller-Rabin\n";
     BigInt d = BigInt(5);
     int i = 0;
     while (true){
-        if (Cryptography::legendre(d, a) == -1){
+        if (Cryptography::jacobi(d, a) == -1){
             cout << "Found d in BPSW algo\n";
             break;
         }
@@ -154,18 +156,16 @@ const bool Cryptography::isPrimeBPSW(const BigInt& a) {
 
 // Luke prime test
 const bool Cryptography::isPrimeLuke(const BigInt& n, const BigInt& d, const BigInt& p, const BigInt& q) {
-    BigInt k = n, t, _v, add;
+    BigInt k = n, t, add;
     BigInt u = BigInt(1);
     BigInt v = p;
     while (k > BigInt(0)){
         t = k % BigInt(2);
         k = k / BigInt(2);
-        _v = u;
         u = u*v;
         v = (v*v +d*u*u)/BigInt(2);
         if (t == BigInt(1)){
             add = p*u + v;
-            _v = v;
             if (add % BigInt(2) == BigInt(1))
                 add = add + n;
             u = add / BigInt(2);
@@ -257,4 +257,42 @@ const BigInt Cryptography::factorLenstra(const BigInt& _n)
         t = t - BigInt(1);
     }
     return BigInt(1);
+}
+
+// test
+void assert(bool received, bool expected, string num){
+    if(received != expected){
+        cout << "assertion failed: number - " << num << endl;
+    }
+    else
+        cout << "passed " << num <<'\n';
+}
+
+void Cryptography::test() {
+    std::cout << "Checking Miller–Rabin primality test\n";
+    assert(Cryptography::isPrime(BigInt(13)), true, "13");
+    assert(Cryptography::isPrime(BigInt(31)), true, "31");
+    assert(Cryptography::isPrime(BigInt(89)), true, "89");
+    assert(Cryptography::isPrime(BigInt(149)), true, "149");
+    assert(Cryptography::isPrime(BigInt(2459)), true, "2459");
+    assert(Cryptography::isPrime(BigInt(71129)), true, "71129");
+    assert(Cryptography::isPrime(BigInt("3245611")), true, "3245611");
+    assert(Cryptography::isPrime(BigInt("87178291199")), true, "87178291199");
+    assert(Cryptography::isPrime(BigInt("265252859812191058636308479999999")), true, "265252859812191058636308479999999");
+    assert(Cryptography::isPrime(BigInt("8683317618811886495518194401279999999")), true, "8683317618811886495518194401279999999");
+    std::cout << "all test passed \n";
+
+    std::cout << "Checking Baillie–PSW primality test\n";
+    assert(Cryptography::isPrimeBPSW(BigInt(13)), true, "13");
+    assert(Cryptography::isPrimeBPSW(BigInt(31)), true, "31");
+    assert(Cryptography::isPrimeBPSW(BigInt(149)), true, "149");
+    assert(Cryptography::isPrimeBPSW(BigInt(2459)), true, "2459");
+    assert(Cryptography::isPrimeBPSW(BigInt(71129)), true, "71129");
+    assert(Cryptography::isPrimeBPSW(BigInt("3245611")), true, "3245611");
+    assert(Cryptography::isPrimeBPSW(BigInt("87178291199")), true, "87178291199");
+    assert(Cryptography::isPrimeBPSW(BigInt("265252859812191058636308479999999")), true, "265252859812191058636308479999999");
+    assert(Cryptography::isPrimeBPSW(BigInt("8683317618811886495518194401279999999")), true, "8683317618811886495518194401279999999");
+    std::cout << "all test passed \n";
+
+
 }
