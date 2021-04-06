@@ -212,7 +212,6 @@ bool BigInt::operator < (const BigInt &a) const {
     if (a.sign ^ this->sign) {
         return a.sign ? true : false;
     }
-    bool sign = a.sign;
     long long n = max(a.bits.size(), this->bits.size());
     if (a.bits.size() != this->bits.size()) {
         return (this->bits.size() < n) ?  true : false;
@@ -226,6 +225,7 @@ bool BigInt::operator < (const BigInt &a) const {
     }
     return delta < 0 ? true : false;
 }
+
 bool BigInt::operator >= (const BigInt &a) const {
     return !(*this<a);
 }
@@ -352,6 +352,10 @@ const BigInt gcd(const BigInt& a, const BigInt& b) {
     if (a == BigInt(0))
 		return b;
 	return gcd (b % a, a);
+}
+
+const BigInt lcm(const BigInt& a, const BigInt& b) {
+    return a * b / gcd(a, b);
 }
 
 bool congrEquation(const BigInt& a, const BigInt& b, const BigInt& m, vector<BigInt>& result) {

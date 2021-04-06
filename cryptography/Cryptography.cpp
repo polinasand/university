@@ -13,6 +13,20 @@ const BigInt Cryptography::euler(const BigInt& n) {
     return ans;
 }
 
+const BigInt Cryptography::carmichael(const BigInt& n) {
+    map<BigInt, int> factors;
+    factor(n, factors);
+    BigInt ans = BigInt(1), p, k, temp;
+    for (auto factor = factors.begin(); factor != factors.end(); factor++) {
+        p = factor->first, k = BigInt(factor->second);
+        temp = pow(p, k-1, 0) * (p-1);
+        if (p == BigInt(2) && k > BigInt(2))
+            temp = temp / BigInt(2);
+        ans = lcm(temp, ans);
+    }
+    return ans;
+}
+
 const int Cryptography::mobius(const BigInt&n) {
     map<BigInt, int> factors;
     factor(n, factors);
@@ -293,6 +307,6 @@ void Cryptography::test() {
     assert(Cryptography::isPrimeBPSW(BigInt("265252859812191058636308479999999")), true, "265252859812191058636308479999999");
     assert(Cryptography::isPrimeBPSW(BigInt("8683317618811886495518194401279999999")), true, "8683317618811886495518194401279999999");
     std::cout << "all test passed \n";
-
-
 }
+
+

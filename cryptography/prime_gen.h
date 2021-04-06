@@ -1,3 +1,4 @@
+#pragma once
 #include "Cryptography.h"
 
 class prime_gen {
