@@ -10,7 +10,7 @@ private:
     static const int N = 20;
 public:
     static const BigInt euler(const BigInt&);
-    static const BigInt carmichael(const BigInt&);
+    static const BigInt carmichael(const BigInt&, const BigInt&);
     static const int mobius(const BigInt&);
     static const int legendre(const BigInt&, const BigInt&);
     static const int jacobi(const BigInt&, const BigInt&);
@@ -22,5 +22,9 @@ public:
     static const void factor(const BigInt&, map<BigInt, int>&);
     static const BigInt inverseEl(const BigInt&, const BigInt&);
     static const BigInt factorLenstra(const BigInt&);
+};
+
+class Test {
+public:
     static void test();
 };

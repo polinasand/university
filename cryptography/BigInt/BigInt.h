@@ -23,9 +23,11 @@ public:
     vector<int> bits = vector<int>(); // base10
     vector<int> bits2 = vector<int>(); // base2
     vector<int> bits64 = vector<int>();
-
+    vector<int> bytes = vector<int>();
     void toBase2();
     void toBase64();
+    void toBytes();
+
     // -
     friend const BigInt operator - (const BigInt &a);
 

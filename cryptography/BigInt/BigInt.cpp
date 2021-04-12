@@ -8,6 +8,9 @@ using namespace std;
 BigInt::BigInt() {
     this->sign = true;
     this->bits.push_back(0);
+    /*this->bits2.push_back(0);
+    this->bits64.push_back(48);
+    this->bytes.push_back(0);*/
 }
 
 BigInt::BigInt(const string & s) {
@@ -20,6 +23,9 @@ BigInt::BigInt(const string & s) {
         this->bits.push_back(digit);
     }
     this->removeLeadingZeros();
+    /*this->toBase2();
+    this->toBase64();
+    this->toBytes();*/
 }
 
 BigInt::BigInt(int n) {
@@ -33,12 +39,18 @@ BigInt::BigInt(int n) {
         }
     }
     this->removeLeadingZeros();
+    /*this->toBase2();
+    this->toBase64();
+    this->toBytes();*/
 }
 
 BigInt::BigInt(const vector<int> &bits, const bool &sign) {
     this->sign = sign;
     this->bits = bits;
     this->removeLeadingZeros();
+    /*this->toBase2();
+    this->toBase64();
+    this->toBytes();*/
 }
 
 // -
@@ -313,6 +325,18 @@ void BigInt::toBase64(){
             }
             this->bits64.push_back(add);
             t = t / BigInt(64);
+        }
+    }
+}
+
+void BigInt::toBytes() {
+    if (this->bytes.size() < 1){
+        BigInt t = BigInt(this->bits, this->sign);
+        while (t > 0){
+            BigInt v = t % BigInt(256);
+            int val = v.bits[0] + v.bits[1]*10 + v.bits[2]*100;
+            this->bytes.push_back(val);
+            t = t / BigInt(256);
         }
     }
 }

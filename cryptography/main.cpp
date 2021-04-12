@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 #include "BigInt/BigInt.cpp"
 #include "Cryptography.h"
 #include "ElGamal.h"
@@ -23,7 +24,6 @@ void infoCryptography() {
     cout << "------"<< endl;
     cout << "Choose some option.\n";
     cout << "Euler function: eul a"<< endl;
-    cout << "Carmichael function: crm a"<< endl;
     cout << "Mobius function: mob a" << endl;
     cout << "Legendre symbol: leg a p" << endl;
     cout << "Jacobi symbol: jac a p" << endl;
@@ -37,7 +37,7 @@ void infoCryptography() {
     cout << "El-Gamal cryptosystem: elgamal" << endl;
     cout << "Lenstra: len n" << endl;
     cout << "generate prime of len n: gen n" << endl;
-    cout << "RSA with n of len k: rsa k" << endl;
+    cout << "RSA with key of len k: rsa k" << endl;
     cout << "info" << endl;
     cout << "exit" << endl;
     cout << "------"<< endl;
@@ -85,18 +85,12 @@ void processCryptography() {
         if (command == "exit")
             exit(0);
         if (command == "info") {
-            info();
+            infoCryptography();
             return;
         }
         if (command == "eul") {
             if (processLine(a, b, c))
                 cout << Cryptography::euler(a) << endl;
-            else
-                error();
-        }
-        if (command == "crm") {
-            if (processLine(a, b, c))
-                cout << Cryptography::carmichael(a) << endl;
             else
                 error();
         }
@@ -221,16 +215,18 @@ void processCryptography() {
             int k;
             string s;
             cin >> k;
-            cout << "Input string ";
-            cin >> s;
+            cout << "Input string\n";
+            cin.ignore();
+            getline(cin, s);
             RSA rsa = RSA(k);
             cout << "Public key: n = "<<rsa.n << " e = " << rsa.public_key << endl;
-            vector<BigInt> message = rsa.stringToInt(s);
-            vector<BigInt> c = rsa.encrypt(message);
-            cout <<"Encrypted " << endl;
-            cout << "Decrypted ";
-            for (auto code : rsa.decrypt(c))
-                cout << code << ' ';
+            vector<BigInt> ciphertext = rsa.sendMessage(s);
+            cout <<"Encrypted ";
+            for (auto cipher : ciphertext)
+                cout << cipher << ' ';
+            cout << endl;
+            string message = rsa.receiveMessage(ciphertext);
+            cout << "Decrypted "<< message << endl;
         }
     }
     else{

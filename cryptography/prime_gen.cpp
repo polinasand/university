@@ -1,5 +1,5 @@
 #include "prime_gen.h"
-#include<chrono>
+#include <chrono>
 #include <cmath>
 
 const BigInt prime_gen::nextPrime(int length_in_bits){
@@ -14,8 +14,4 @@ const BigInt prime_gen::nextPrime(int length_in_bits){
 	}
 	return result;
 }
-const BigInt  prime_gen::next(int length_in_bits){
 
-
-
-}
