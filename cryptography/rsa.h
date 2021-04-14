@@ -19,11 +19,12 @@ public:
     RSA(int len);
     BigInt n;
     BigInt public_key; // e
+    Signature signature;
     // global methods for user
     vector<BigInt> sendMessage(const string);
     string receiveMessage(vector<BigInt>&);
-	BigInt stringToInt(const string& s);
-    string intToString(BigInt& m);
+	vector<BigInt> stringToInt(const string& s);
+    string intToString(vector<BigInt>& m);
     // sign
     Signature sign(const string& message, const BigInt&, const BigInt&, const BigInt&);
     bool verify(const string& message, Signature signature);

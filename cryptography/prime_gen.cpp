@@ -4,7 +4,7 @@
 
 const BigInt prime_gen::nextPrime(int length_in_bits){
 	BigInt modulo = pow(BigInt(2), BigInt(length_in_bits), BigInt(0));
-    BigInt result = modulo /  BigInt(2) + BigInt(1);
+    BigInt result = pow(BigInt(2), length_in_bits-1, 0) + BigInt(1);
     BigInt minVal = result;
 	srand(time(nullptr));
 	while (!Cryptography::isPrime(result) || result < minVal) {

@@ -5,6 +5,7 @@
 #include "ElGamal.h"
 #include "prime_gen.h"
 #include "rsa.h"
+#include "test.h"
 
 using namespace std;
 
@@ -15,9 +16,12 @@ bool processLine(BigInt &, BigInt &, BigInt &);
 
 int main()
 {
-    infoCryptography();
-    while (true)
+    //infoCryptography();
+    int a;
+    while (true){
         processCryptography();
+    }
+
     return 0;
 }
 void infoCryptography() {
