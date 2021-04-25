@@ -160,12 +160,13 @@ void SHA256::processBlock(byte *message, int start, unsigned int *w) {
 
 unsigned int* SHA256::hash(std::string message){
 	std::vector<byte> message_bytes;
-	message_bytes.resize(message.size());
-	for (int i = 0; i < message.size(); i++){
+	int nb = message.size();
+	message_bytes.resize(nb);
+	for (int i = 0; i < nb; i++){
 		message_bytes[i] = message[i];
 	}
 	init();
-	int nb = message_bytes.size();
+
 	byte* internal_message = preprocess(&message_bytes[0], nb);
 
 	unsigned int w[64];

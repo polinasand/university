@@ -1,4 +1,5 @@
 // source: SergeyBel
+#pragma once
 #include<cstring>
 #include <iostream>
 #include <stdio.h>
@@ -6,36 +7,36 @@ using namespace std;
 
 class AES {
 private:
-    int Nb = 4;
-    int Nk = 8;
-    int Nr = 14;
-    unsigned int blockBytesLen = 4 * Nb * sizeof(unsigned char);
+    int Nb;
+    int Nk;
+    int Nr;
+    unsigned int blockBytesLen;
 
-      void SubBytes(unsigned char **state);
-      void ShiftRow(unsigned char **state, int i, int n);    // shift row i on n positions
-      void ShiftRows(unsigned char **state);
-      unsigned char xtime(unsigned char b);    // multiply on x
-      unsigned char mul_bytes(unsigned char a, unsigned char b);
-      void MixColumns(unsigned char **state);
-      void MixSingleColumn(unsigned char *r);
-      void AddRoundKey(unsigned char **state, unsigned char *key);
-      void SubWord(unsigned char *a);
-      void RotWord(unsigned char *a);
-      void XorWords(unsigned char *a, unsigned char *b, unsigned char *c);
-      void Rcon(unsigned char * a, int n);
-      void InvSubBytes(unsigned char **state);
-      void InvMixColumns(unsigned char **state);
-      void InvShiftRows(unsigned char **state);
-      unsigned char* PaddingNulls(unsigned char in[], unsigned int inLen, unsigned int alignLen);
+    void SubBytes(unsigned char **state);
+    void ShiftRow(unsigned char **state, int i, int n);    // shift row i on n positions
+    void ShiftRows(unsigned char **state);
+    unsigned char xtime(unsigned char b);    // multiply on x
+    unsigned char mul_bytes(unsigned char a, unsigned char b);
+    void MixColumns(unsigned char **state);
+    void MixSingleColumn(unsigned char *r);
+    void AddRoundKey(unsigned char **state, unsigned char *key);
+    void SubWord(unsigned char *a);
+    void RotWord(unsigned char *a);
+    void XorWords(unsigned char *a, unsigned char *b, unsigned char *c);
+    void Rcon(unsigned char * a, int n);
+    void InvSubBytes(unsigned char **state);
+    void InvMixColumns(unsigned char **state);
+    void InvShiftRows(unsigned char **state);
+    unsigned char* PaddingNulls(unsigned char in[], unsigned int inLen, unsigned int alignLen);
 
-      unsigned int GetPaddingLength(unsigned int len);
+    unsigned int GetPaddingLength(unsigned int len);
 
-      void KeyExpansion(unsigned char key[], unsigned char w[]);
+    void KeyExpansion(unsigned char key[], unsigned char w[]);
 
-      void EncryptBlock(unsigned char in[], unsigned char out[], unsigned  char *roundKeys);
-      void DecryptBlock(unsigned char in[], unsigned char out[], unsigned  char key[]);
+    void EncryptBlock(unsigned char in[], unsigned char out[], unsigned  char *roundKeys);
+    void DecryptBlock(unsigned char in[], unsigned char out[], unsigned  char key[]);
 
-      void XorBlocks(unsigned char *a, unsigned char * b, unsigned char *c, unsigned int len);
+    void XorBlocks(unsigned char *a, unsigned char * b, unsigned char *c, unsigned int len);
 
 public:
     AES();

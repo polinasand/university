@@ -1,11 +1,17 @@
 #include "GroupDh.h"
 #include "prime_gen.h"
+#include "SHA256.h"
+#include "AES.h"
 
+AES aes;
+SHA256 sha;
 User::User(){
+
 }
 User::User(string username){
     this->username = username;
-    this->private_key = prime_gen::nextPrime(5);
+    this->private_key = prime_gen::nextPrime(6);
+    Sleep(500);
 }
 
 string User::getUsername() {
@@ -16,8 +22,11 @@ BigInt User::send(const BigInt& data, const BigInt& modulo) {
     return pow(data, this->private_key, modulo);
 }
 
-void User::setSecret(BigInt& data) {
-    secret = data;
+void User::setSecret(BigInt data) {
+    data.toBytes();
+    for (int i=0; i<32; i++){
+        secret[i] = data.bytes[0];
+    }
 }
 
 BigInt User::getPrivateKey() {
@@ -50,7 +59,6 @@ GroupDH::GroupDH(int len) {
             return;
         }
     }
-
 }
 
 void GroupDH::addUser(User user) {
@@ -70,31 +78,100 @@ void GroupDH::createKey() {
     int n = (int)users.size();
     for (int i=0; i<n; i++) {
         BigInt data = users[i].send(g, modulo);
-        for (int j=i+1; j != i+1; j++){
+        for (int j=i+1; j % n != i; j++){
             j %= n;
-            if (i==j)
-                continue;
             data = users[j].send(data, modulo);
         }
-        users[(i+n) % n].setSecret(data);
+        users[i].setSecret(data);
         cout << "user got secret "<<data<<endl;
-        keys[(i+n)%n] = data;
+
     }
 }
 
-void GroupDH::sendMessage(Message message) {
+void GroupDH::sendMessage(json j) {
+    for (auto user : users){
+        user.getMessage(j);
+    }
+
+}
+
+json User::createMessage(Message message){
     unsigned int * h = sha.hash(message.data);
-    int l = message.data.size(), outLen;
-    unsigned char data[l] = message.data;
-    unsigned char key[32];
-    for (int i=0; i<32; i++){
-         BigInt k = message.sender.getPrivateKey();
-         k.toBytes();
-         key[i] = k.bytes[0];
-    }
-    cout << key << endl;
-    unsigned int * cipher = aes.Encrypt(data, l, key, outLen);
-    cout << cipher << endl;
+    unsigned int l = message.data.size(), outLen;
+    unsigned char *data = new unsigned char[l+1];
+    strcpy((char*)data, message.data.c_str());
+    cout << data << endl;
+    unsigned char * cipher = aes.Encrypt(data, l+1, secret, outLen);
+    aes.printHexArray(cipher, outLen);
+    json j;
+    to_json(j, cipher, message.sender, outLen, h);
+    cout << "Message created\n";
+    cout << j << endl;
+    delete [] h;
+    delete [] data;
+    delete [] cipher;
+    return j;
 }
 
+void User::getMessage(json j) {
+    Message message = decrypt(j);
+    cout << "User " << username << " received message " <<
+        message.data << " from " << message.sender << endl;
+}
 
+Message User::decrypt(json j) {
+    unsigned char * cipher;
+    Message message("none", "");
+    unsigned int * h;
+    unsigned int len;
+    from_json(j, cipher, len, h, message.sender);
+
+    for (int i=0; i<len; i++){
+        // message.data += res[i];
+    }
+
+    if (!GroupDH::verify(message.data, h)){
+        cout << "wrong hash\n";
+    }
+    unsigned char * res = aes.Decrypt(cipher, len, this->secret);
+    cout << res;
+    return message;
+}
+
+bool GroupDH::verify(string data, unsigned int* recHash){
+    unsigned int* actHash = sha.hash(data);
+    for (int i=0; i<8; i++){
+        if (actHash[i] != recHash[i])
+            return false;
+    }
+    return true;
+}
+void to_json(json& j, unsigned char * cipher, string sender, unsigned int len, unsigned int* h){
+    unsigned int ha[8];
+    unsigned char ci[16];
+    memcpy(ha, h, 8);
+    j["hash"] = ha;
+    memcpy(ci, cipher, 16);
+    j["message"] = ci;
+    j["size"] = len;
+    j["user"] = sender;
+    delete [] ha;
+    delete [] ci;
+}
+
+void from_json(const json& j, unsigned char* &cipher, unsigned int &len, unsigned int* &recHash, string& sender){
+    recHash = new unsigned int[8];
+    cipher = new unsigned char[16];
+    int i=0;
+    for (; i<8;){
+        recHash[i] = j["hash"][i];
+        i++;
+    }
+    i=0;
+    for (;i<16;){
+        cipher[i] = j["message"][i];
+        i++;
+    }
+    sender = j["user"];
+    len = j["size"];
+}

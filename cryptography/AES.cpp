@@ -2,6 +2,10 @@
 using namespace std;
 
 AES::AES() {
+    Nb = 4;
+    Nk = 8;
+    Nr = 14;
+    blockBytesLen = 4 * Nb * sizeof(unsigned char);
 }
 void AES::KeyExpansion(unsigned char key[], unsigned char w[]) {
     unsigned char *temp = new unsigned char[4];
@@ -152,6 +156,7 @@ void AES::printHexArray (unsigned char a[], unsigned int n) {
     for (unsigned int i = 0; i < n; i++) {
 	  printf("%02x ", a[i]);
 	}
+	printf("\n");
 }
 
 void AES::SubBytes(unsigned char **state) {
