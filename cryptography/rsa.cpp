@@ -1,10 +1,11 @@
 #include "rsa.h"
-#include "BigInt/BigInt.h"
 #include "prime_gen.h"
 
 RSA::RSA(int len) {
     BigInt p = prime_gen::nextPrime(len);
     BigInt q = prime_gen::nextPrime(len);
+    while (p == q)
+        q = prime_gen::nextPrime(len);
     n = p*q;
     BigInt phi_n = lcm(p-BigInt(1), q-BigInt(1));
     public_key = prime_gen::nextPrime(len/2);

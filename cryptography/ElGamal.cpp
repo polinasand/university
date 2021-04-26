@@ -1,5 +1,4 @@
 #include "ElGamal.h"
-#include "BigInt/BigInt.h"
 #include "Cryptography.h"
 
 using namespace std;

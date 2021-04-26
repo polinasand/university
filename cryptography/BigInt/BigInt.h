@@ -1,7 +1,7 @@
-#ifndef BIGINT_H
+/*#ifndef BIGINT_H
 #define BIGINT_H
 
-#endif // BIGINT_H_INCLUDED
+#endif // BIGINT_H_INCLUDED*/
 #pragma once
 #include <vector>
 #include <cmath>

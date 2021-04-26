@@ -279,6 +279,10 @@ void BigInt::removeLeadingZeros() {
 void BigInt::toBase2(){
     if (this->bits2.size() < 1){
         BigInt t = BigInt(this->bits, this->sign);
+        if (t == BigInt(0)){
+            this->bits2.push_back(0);
+            return;
+        }
         while (t > BigInt(0)){
             this->bits2.push_back(t % BigInt(2) == BigInt(0) ? 0 : 1);
             t = t / BigInt(2);

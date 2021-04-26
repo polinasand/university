@@ -1,5 +1,6 @@
 #include "Cryptography.h"
 #include "ElGamal.h"
+
 using namespace std;
 
 const BigInt Cryptography::euler(const BigInt& n) {

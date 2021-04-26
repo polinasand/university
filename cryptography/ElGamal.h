@@ -1,5 +1,4 @@
 #pragma once
-#include "BigInt/BigInt.h"
 #include "Cryptography.h"
 #include<iostream>
 using namespace std;
