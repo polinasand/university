@@ -1,9 +1,10 @@
+// Source: https://github.com/ShcherbinaMariia/Cryptography/tree/master/SHA256
+
 #pragma once
 #include <string>
 #include <limits.h>
 #include<vector>
 #include<cstring>
-//#include "long_hex.h"
 
 using byte = unsigned char;
 

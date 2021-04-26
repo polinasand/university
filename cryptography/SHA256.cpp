@@ -1,3 +1,5 @@
+// Source: https://github.com/ShcherbinaMariia/Cryptography/tree/master/SHA256
+
 #include "sha256.h"
 #include <iostream>
 
@@ -47,12 +49,12 @@ unsigned int rotr(unsigned int x, unsigned int n) {
   return (x >> n) | (x << (sizeof(unsigned int) * CHAR_BIT - n));
 }
 
-void encodeLength(unsigned long long length, byte *a, unsigned int begin){
+void encodeLength(unsigned long long length, byte *a, unsigned int _begin){
 	unsigned long long reversedLength = reverseEndian(length);
 	unsigned int bytes = sizeof(unsigned long long), shift;
 	for (int i = bytes - 1; i >= 0; i--){
 		shift = i * CHAR_BIT;
-		a[begin + i] = byte((reversedLength>>shift) & 0xFF);
+		a[_begin + i] = byte((reversedLength>>shift) & 0xFF);
 	}
 }
 

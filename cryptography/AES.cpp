@@ -1,3 +1,5 @@
+// using SergeyBel's AES: https://github.com/SergeyBel/AES
+
 #include "AES.h"
 using namespace std;
 
@@ -105,7 +107,7 @@ void AES::DecryptBlock(unsigned char in[], unsigned char out[], unsigned  char *
     for (round = Nr-1; round > 0; round--)
     {
         InvSubBytes(state);
-        InvShiftRows(state); // check
+        InvShiftRows(state);
         AddRoundKey(state, roundKeys + round*4*Nb);
         InvMixColumns(state);
     }
@@ -151,7 +153,6 @@ unsigned char *AES::Decrypt(unsigned char in[], unsigned int inLen, unsigned  ch
     return out;
 }
 
-// help methods
 void AES::printHexArray (unsigned char a[], unsigned int n) {
     for (unsigned int i = 0; i < n; i++) {
 	  printf("%02x ", a[i]);
