@@ -6,9 +6,11 @@
 #include "prime_gen.h"
 #include "rsa.h"
 #include "test.h"
+#include "GroupDh.h"
 
 using namespace std;
 
+void chat();
 void infoCryptography();
 void error();
 void processCryptography();
@@ -16,14 +18,14 @@ bool processLine(BigInt &, BigInt &, BigInt &);
 
 int main()
 {
-    //infoCryptography();
-    int a;
+    infoCryptography();
     while (true){
         processCryptography();
     }
 
     return 0;
 }
+
 void infoCryptography() {
     cout << "------"<< endl;
     cout << "Choose some option.\n";
