@@ -1,4 +1,8 @@
+#pragma once
 #include "BigInt/BigInt.h"
+#include "json.hpp"
+
+using json = nlohmann::json;
 
 class RSA{
 private:
@@ -15,17 +19,24 @@ public:
         BigInt public_key;
         BigInt n;
     };
-
+    RSA();
     RSA(int len);
     BigInt n;
     BigInt public_key; // e
     Signature signature;
+
     // global methods for user
     vector<BigInt> sendMessage(const string);
     string receiveMessage(vector<BigInt>&);
 	vector<BigInt> stringToInt(const string& s);
     string intToString(vector<BigInt>& m);
+    vector<BigInt> getKeys();
+
     // sign
     Signature sign(const string& message, const BigInt&, const BigInt&, const BigInt&);
+    Signature sign(const string& message);
     bool verify(const string& message, Signature signature);
 };
+
+void to_json(json& j, const RSA::Signature& signature);
+void from_json(const json& j, RSA::Signature& signature);

@@ -1,6 +1,9 @@
 #include "rsa.h"
 #include "prime_gen.h"
 
+RSA::RSA() {
+}
+
 RSA::RSA(int len) {
     BigInt p = prime_gen::nextPrime(len);
     BigInt q = prime_gen::nextPrime(len);
@@ -12,6 +15,13 @@ RSA::RSA(int len) {
     private_key = Cryptography::inverseEl(public_key, phi_n);
 }
 
+vector<BigInt> RSA::getKeys() {
+    vector<BigInt> keys;
+    keys.push_back(public_key);
+    keys.push_back(private_key);
+    keys.push_back(n);
+    return keys;
+}
 vector<BigInt> RSA::sendMessage(const string message) {
     this->signature = this->sign(message, public_key, private_key, n);
     return encrypt(message, this->public_key, this->n);
@@ -77,4 +87,20 @@ RSA::Signature RSA::sign(const string& message, const BigInt& pub_key, const Big
 
 bool RSA::verify(const string& message, RSA::Signature signature) {
     return message == decrypt(signature.signatures, signature.public_key, signature.n);
+}
+
+RSA::Signature RSA::sign(const string& message) {
+    return sign(message, this->public_key, this->private_key, this->n);
+}
+
+void to_json(json& j, const RSA::Signature& signature){
+	j = json{{"signatures", signature.signatures},
+			 {"public_key", signature.public_key},
+			 {"n", signature.n}};
+}
+
+void from_json(const json& j, RSA::Signature& signature){
+	j.at("signatures").get_to(signature.signatures);
+	j.at("public_key").get_to(signature.public_key);
+	j.at("n").get_to(signature.n);
 }
