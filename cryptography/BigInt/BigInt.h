@@ -1,12 +1,11 @@
-/*#ifndef BIGINT_H
-#define BIGINT_H
-
-#endif // BIGINT_H_INCLUDED*/
 #pragma once
 #include <vector>
 #include <cmath>
 #include <string>
+#include "json.hpp"
+
 using namespace std;
+using json = nlohmann::json;
 
 class BigInt {
 private:
@@ -65,4 +64,5 @@ bool congrEquation(const BigInt& a, const BigInt& b, const BigInt& m, vector<Big
 const BigInt systemOfEquation(const vector<int> &r, const vector<int> &m);
 int powModP(int a, int n, int p);
 
-
+void to_json(json& j, const BigInt& big_int);
+void from_json(const json& j, BigInt& big_int);

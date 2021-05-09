@@ -5,6 +5,16 @@
 #include<algorithm>
 using namespace std;
 
+
+void to_json(json& j, const BigInt& big_int){
+	j = json{{"sign", big_int.sign}, {"bits", big_int.bits}};
+}
+
+void from_json(const json& j, BigInt& big_int){
+	j.at("sign").get_to(big_int.sign);
+	j.at("bits").get_to(big_int.bits);
+}
+
 BigInt::BigInt() {
     this->sign = true;
     this->bits.push_back(0);
