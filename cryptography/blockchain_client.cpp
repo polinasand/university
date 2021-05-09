@@ -1,20 +1,20 @@
 #include "blockchain_client.h"
 #include <iostream>
 BlockchainClient::BlockchainClient() {
-    blockchain = Blockchain::load();
+    this->blockchain = Blockchain::load();
 }
 
 bool BlockchainClient::mineBlock(BigInt address) {
     MiningTransaction mining_transaction(address);
     vector<SignedTransaction> pool = this->blockchain.getPool();
     string root = Block::getMerkleRoot(pool, mining_transaction);
-    cout << "mining tr created\n";
+    cout << "mining transaction created\n";
 
     Block::Header header;
     header.id = blockchain.getNumberOfBlocks();
     header.merkle_root = root;
     header.previous_hash = blockchain.getLastBlockHeaderHash();
-    cout << header.id << " header\n";
+    cout << "block_id " << header.id<<"\n";
     Block block;
     block.setTransactions(pool, mining_transaction);
 
@@ -39,12 +39,10 @@ void BlockchainClient::addSignedTransaction(RSA from, BigInt to, double amount) 
     SignedTransaction signed_transaction;
     signed_transaction.setTransaction(transaction);
     string transaction_hash = signed_transaction.hashTransaction();
-    cout << from.public_key << ' ' << to << ' ' << transaction_hash << endl;
 
     signed_transaction.setSignature(from.sign(transaction_hash));
-    cout << "signed ";
     blockchain.addSignedTransaction(signed_transaction);
-    cout <<"Succes\n";
+    cout <<"Successfully added.\n";
 }
 
 bool BlockchainClient::verifyBlockchain() {
@@ -57,7 +55,7 @@ double BlockchainClient::getBalance(BigInt address, int block)
 }
 
 void BlockchainClient::dump() {
-    blockchain.dump();
+    this->blockchain.dump();
 }
 
 map<BigInt, double> BlockchainClient::getBalances(int block) {

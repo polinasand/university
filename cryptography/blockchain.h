@@ -93,4 +93,5 @@ public:
 
 	map<BigInt, double> getBalances(int block = -1);
 	double getBalance(BigInt address, int block = -1);
+	void setBalances(map<BigInt, double> balances);
 };

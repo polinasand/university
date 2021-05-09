@@ -113,7 +113,7 @@ Blockchain Blockchain::load() {
     file.open(kDumpFile);
 
     if (!file.is_open()){
-        cout << "not opened ";
+        cout << "cant open\n";
         return Blockchain();
     }
 
@@ -129,7 +129,8 @@ void Blockchain::dump() {
     json j = *this;
     std::ofstream file;
     file.open(kDumpFile);
-
+    if (!file.is_open())
+        cout << "cant open\n";
     file << j.dump();
     file.close();
 }
@@ -180,7 +181,7 @@ int Blockchain::getNumberOfBlocks() {
     return this->blocks.size();
 }
 
-map<BigInt, double> Blockchain::getBalances(int block) {
+map<BigInt, double> Blockchain::getBalances(int block){
     map<BigInt, double> balance;
     if (block == -1)
         block = getNumberOfBlocks();
@@ -193,17 +194,22 @@ map<BigInt, double> Blockchain::getBalances(int block) {
     return balance;
 }
 
+
+void Blockchain::setBalances(map<BigInt, double> balances) {
+    this->balances = balances;
+}
+
 double Blockchain::getBalance(BigInt address, int block) {
     return getBalances(block)[address];
 }
 
 //block
 string Block::getHeaderHash() {
-    SHA256 sha;
+    SHA256 *sha = new SHA256();
     json j = getHeader();
     string ans;
-    unsigned int* h = sha.hash(j.dump());
-    strcpy((char*)h, ans.c_str());
+    ans = sha->hash(j.dump());
+
     return ans;
 }
 
@@ -241,9 +247,9 @@ bool Block::verifyMerkleRoot() {
 
 bool Block::verifyMiningTransaction() {
     string hash = this->getHeaderHash();
-    cout << hash << '\n';
+    int len = hash.size();
     for (int i=0; i < Blockchain::kTargetZerosPrefix; i++) {
-        if (hash[i] != '0')
+        if (hash[len-i-1] != '0')
             return false;
     }
     return true;
@@ -297,7 +303,8 @@ string SignedTransaction::hashTransaction() {
     SHA256 sha;
     string hash;
     json j = transaction;
-    strcpy((char*)sha.hash(j.dump()), hash.c_str());
+    hash = sha.hash(j.dump());
+
     return hash;
 }
 
