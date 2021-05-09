@@ -13,7 +13,8 @@ string MerkleTree::calculateRoot(vector<string> inputs){
 
 	for (auto input: inputs){
         string input_hash;
-        strcpy((char*)sha->hash(input), input_hash.c_str());
+        //strcpy((char*)sha->hash(input), input_hash.c_str());
+        input_hash = sha->hash(input);
 		state[curr].push_back(input_hash);
 	}
 
@@ -23,7 +24,8 @@ string MerkleTree::calculateRoot(vector<string> inputs){
 			node_value = node_value +
 			((j + 1 < state[curr].size()) ? state[curr][j + 1] : node_value);
 			string node_hash;
-            strcpy((char*)sha->hash(node_value), node_hash.c_str());
+            //strcpy((char*)sha->hash(node_value), node_hash.c_str());
+            node_hash = sha->hash(node_value);
 			state[1 - curr].push_back(node_hash);
 		}
 		state[curr].clear();

@@ -87,15 +87,17 @@ void GroupDH::createKey() {
     }
 }
 
-void GroupDH::sendMessage(Message message) {
-    SHA256 sha;
-    AES aes;
+void GroupDH::sendMessage(Message &message) {
+    SHA256* sha = new SHA256();
+    AES *aes = new AES();
 
-    unsigned int *h = sha.hash(message.data);
+    //unsigned int *h = sha->hash(message.data);
+    string h = sha->hash(message.data);
     unsigned int l = message.data.size(), outLen;
     unsigned char *data = new unsigned char[l+1];
     strcpy((char*)data, message.data.c_str());
-    unsigned char * cipher = aes.Encrypt(data, l+1, key, outLen);
+
+    unsigned char * cipher = aes->Encrypt(data, l+1, key, outLen);
     json j;
 
     to_json(j, cipher, message.sender, outLen, h);
@@ -103,36 +105,37 @@ void GroupDH::sendMessage(Message message) {
     cout << "\njson = " <<j << endl << endl;
 
     from_json(j, cipher, outLen, h, message.sender);
-    unsigned char * res = aes.Decrypt(cipher, outLen, key);
+    unsigned char * res = aes->Decrypt(cipher, outLen, key);
     string s(reinterpret_cast<char const*>(res));
     message.data = s;
-
     for (User user : this->users){
         if (user.getUsername() != message.sender)
         cout << "User " << user.getUsername() << " received message:\n" <<
         message.data << "\nfrom " << message.sender << endl;
     }
+
 }
 
 
-void to_json(json& j, unsigned char * cipher, string sender, unsigned int len, unsigned int* h){
-    unsigned int _h[8];
+void to_json(json& j, unsigned char * cipher, string sender, unsigned int len, string h){
+    //unsigned int _h[8];
     unsigned char _cipher[16];
-    memcpy(_h, h, 8);
-    j["hash"] = _h;
+    //memcpy(_h, h, 8);
+    j["hash"] = h;
     memcpy(_cipher, cipher, 16);
     j["message"] = _cipher;
     j["size"] = len;
     j["user"] = sender;
 }
 
-void from_json(const json& j, unsigned char* &cipher, unsigned int &len, unsigned int* &recHash, string& sender){
-    recHash = new unsigned int[8];
+void from_json(const json& j, unsigned char* &cipher, unsigned int &len, string &recHash, string& sender){
+    //recHash = new unsigned int[8];
     cipher = new unsigned char[16];
 
-    for (int i=0; i<8; i++){
+    /*for (int i=0; i<8; i++){
         recHash[i] = j["hash"][i];
-    }
+    }*/
+    recHash = j["hash"];
 
     for (int i=0; i<16; i++){
         cipher[i] = j["message"][i];

@@ -46,9 +46,9 @@ public:
     BigInt getGenerator();
     void addUser(User);
     void createKey();
-    void sendMessage(Message);
+    void sendMessage(Message &);
 };
 
-void to_json(json& j, unsigned char * cipher, string sender, unsigned int len, unsigned int* h);
-void from_json(const json& j, unsigned char* &cipher, unsigned int &len, unsigned int* &recHash, string& sender);
+void to_json(json& j, unsigned char * cipher, string sender, unsigned int len, string h);
+void from_json(const json& j, unsigned char* &cipher, unsigned int &len, string &recHash, string& sender);
 
