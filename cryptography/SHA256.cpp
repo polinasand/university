@@ -160,7 +160,7 @@ void SHA256::processBlock(byte *message, int start, unsigned int *w) {
 	}
 }
 
-unsigned int* SHA256::hash(std::string message){
+std::string SHA256::hash(std::string message){
 	std::vector<byte> message_bytes;
 	int nb = message.size();
 	message_bytes.resize(nb);
@@ -176,7 +176,11 @@ unsigned int* SHA256::hash(std::string message){
 	for (int i = 0; i < nb; i += kBlockSize/CHAR_BIT){
 		processBlock(internal_message, i, w);
 	}
-
-	return h;
+    std::string ans;
+    for (int i=0; i<8; i++){
+        ans += std::to_string(*(h+i));
+    }
+    //strcpy((char*)h, ans.c_str());
+	return ans;
 }
 

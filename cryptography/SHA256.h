@@ -22,5 +22,5 @@ private:
 	byte* preprocess(byte* message, unsigned int message_bytes);
 	void processBlock(byte *message, int start, unsigned int *w);
 public:
-	unsigned int* hash(std::string message);
+	std::string hash(std::string message);
 };
