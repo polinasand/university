@@ -7,6 +7,20 @@ import main
 matplotlib.use('TkAgg')
 
 points, addpoints = [], []
+centres = [0]
+max_rad = 0
+
+root = tk.Tk()
+
+text = tk.Text(root, width=40, height=2)
+text.grid(row=11, column=1)
+
+
+def update_text(centres, max_rad):
+    text.delete(1.0, tk.END)
+    text.insert(1.0, "R = " + str(max_rad) + "\n(" + str(centres[0][0]) + "; " + str(centres[0][1])+")")
+
+
 def init():
     global points
     points = []
@@ -17,14 +31,11 @@ def update():
     global points, addpoints
     points.extend(addpoints)
     addpoints = []
-    main.solve(points)
-    fig.canvas.draw()
-
-def clear():
-
-    global points, addpoints
-    addpoints = []
-    init()
+    [centres, max_rad] = main.solve(points)
+    if max_rad == 0:
+        start()
+        return
+    update_text(centres, max_rad)
     fig.canvas.draw()
 
 
@@ -43,6 +54,7 @@ def addpoint(event):
     plt.plot(x, y, marker='o')
     fig.canvas.draw()
 
+
 def addrandom():
     x = random.randint(-20, 20)
     y = random.randint(-20, 20)
@@ -50,9 +62,13 @@ def addrandom():
     plt.plot(x, y, marker='o')
     fig.canvas.draw()
 
+
 def start():
     plt.clf()
-    global points
+    plt.xlim(-20, 20)
+    plt.ylim(-20, 20)
+    global points, addpoints
+    addpoints = []
     init()
     fig.canvas.draw()
 
@@ -73,7 +89,8 @@ def fromfile():
     plt.clf()
     global points
     points = main.read_from_file("in1.txt")
-    main.solve(points)
+    [centres, max_rad] = main.solve(points)
+    update_text(centres, max_rad)
     fig.canvas.draw()
 
 
@@ -81,11 +98,11 @@ def genrand():
     plt.clf()
     global points
     points = main.gen_points(100)
-    main.solve(points)
+    [centres, max_rad] = main.solve(points)
+    update_text(centres, max_rad)
     fig.canvas.draw()
 
 
-root = tk.Tk()
 plt.xlim(-20, 20)
 plt.ylim(-20, 20)
 fig = plt.figure(1, figsize=(10,10), dpi=100)
@@ -98,15 +115,14 @@ init()
 plot_widget.grid(row=0, column=1)
 plot_widget.bind("<Button-1>", addpoint)
 
-
 frame = tk.Frame(root)
 frame.grid(row=0, column=0)
 tk.Button(frame,text="Update",command=update).grid(row=5, column=1)
 tk.Button(frame, text="Quit", command=quit).grid(row=7, column=1)
 tk.Button(frame, text="Add random point", command=addrandom).grid(row=3, column=1)
-tk.Button(frame, text="Clear", command=clear).grid(row=2, column=1)
 tk.Button(frame, text="Start", command=start).grid(row=1, column=1)
 tk.Button(frame, text="Undo", command=undo).grid(row=4, column=1)
 tk.Button(frame, text="From file", command=fromfile).grid(row=9, column=1)
 tk.Button(frame, text="Generate random", command=genrand).grid(row=10, column=1)
+
 root.mainloop()

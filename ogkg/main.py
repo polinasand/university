@@ -1,4 +1,4 @@
-from scipy.spatial import Voronoi, voronoi_plot_2d
+from scipy.spatial import Voronoi
 import numpy as np
 import matplotlib.pyplot as plt
 import random
@@ -95,10 +95,8 @@ def solve(points):
             (points[k + 1][1] + points[k][1] + points[k + 2][1]) / 3
         ]
 
-        # change the start point todo
-
         # sorted points by angle related to p[k] with head in pk
-        sorted_points = sort_by_angle(points[k], pk)
+        sorted_points = sort_by_angle(min(points), pk)
         print(sorted_points)
 
         # graham
@@ -181,7 +179,7 @@ def solve(points):
         return [x, y]
 
 
-    # return the list of triple points: i-th element in list in a set of three
+    # return the list of triple points: i-th element in list in a set of three or
     # points, that for vertice i are neighbours
     def find_neighbours():
         neighbours = [[] for i in range(len(voronoi.vertices))]
@@ -193,8 +191,8 @@ def solve(points):
         return neighbours
 
 
-    # return the list of circles with the biggest radius
-    def find_centers():
+    # return the list of circles with the biggest radius based on Voronoi edges
+    def find_centers_vertex():
         # list of smallest radiuses for each voronoi vertex
         rads = []
         # list of voronoi vertexes - centres of circle
@@ -211,72 +209,92 @@ def solve(points):
             rad = np.inf
             point = []
             for i in neighbours[v]:
-
-                if radius(points[i], vertices[v]) <= rad:
+                if radius(points[i], vertices[v]) < rad:
                     rad = radius(points[i], vertices[v])
                     point = vertices[v]
-            #print(rad)
 
-            for i in range (len(neighbours[v])):
-                paind = neighbours[v][i]
-                pbind = neighbours[v][(i+1) % len(neighbours[v])]
-                pa = points[paind]
-                pb = points[pbind]
-                if paind in ch:
-                    if pbind in ch:
-                        projection = project_point(vertices[v], pa, pb)
-                        rad_ = radius(vertices[v], projection)
-                        if rad_ <= rad:
-                            rad = rad_
-                            point = vertices[v]
-                    else:
-                        ind = ch.index(paind)
-                        pc_left = points[ch[ind - 1]]
-                        pc_right = points[ch[(ind + 1) % len(ch)]]
-                        projection_left = project_point(vertices[v], pc_left, pa)
-                        projection_right = project_point(vertices[v], pc_right, pa)
-                        rad_left = radius(vertices[v], projection_left)
-                        rad_right = radius(vertices[v], projection_right)
 
-                        if rad_left <= rad:
-                            rad = rad_left
-                            point = vertices[v]
-                        if rad_right <= rad:
-                            rad = rad_right
-                            point = vertices[v]
-                if pbind in ch:
-                    ind = ch.index(pbind)
-                    pc_left = points[ch[ind - 1]]
-                    pc_right = points[ch[(ind + 1) % len(ch)]]
-                    projection_left = project_point(vertices[v], pc_left, pb)
-                    projection_right = project_point(vertices[v], pc_right, pb)
-                    rad_left = radius(vertices[v], projection_left)
-                    rad_right = radius(vertices[v], projection_right)
-
-                    if rad_left <= rad:
-                        rad = rad_left
-                        point = vertices[v]
-                    if rad_right <= rad:
-                        rad = rad_right
-                        point = vertices[v]
             if rad:
                 rads.append(rad)
                 ans.append(point)
-
-
-            # after all neighbours are checked, check if circle is inside the CH
-
-
-        print(rads)
-        print(ans)
         return [rads, ans]
 
-    [rads, ans] = find_centers()
+
+    # find point intersection of edge pa-pb and edge qa-qb and put it to ans
+    def find_intersections(pa, pb, qa, qb, ans, rads):
+        x1, x2, y1, y2 = pa[0], pb[0], pa[1], pb[1]
+        a1, b1, c1 = y2-y1, x1-x2, -x1*y2+y1*x2
+
+        x3, x4, y3, y4 = qa[0], qb[0], qa[1], qb[1]
+        a2, b2, c2 = y4 - y3, x3 - x4, -x3 * y4 + y3 * x4
+
+        if a1*b2 == a2*b1:
+            return
+        x0, y0 = (b1*c2 - b2*c1)/(a1*b2-a2*b1), (-a1*c2 + a2*c1)/(a1*b2-a2*b1)
+
+        # find nearest points c, d  that create an voronoi edge pa - pb
+        a = np.where(voronoi.points == pa)
+        b = np.where(voronoi.points == pb)
+        c, d = pa, pb
+        if [a, b] in voronoi.ridge_vertices:
+            t = voronoi.ridge_vertices.index([a, b])
+            [c, d] = voronoi.ridge_points[t]
+            c, d = points[c], points[d]
+        elif [b, a] in voronoi.ridge_vertices:
+            t = voronoi.ridge_vertices.index([b, a])
+            [c, d] = voronoi.ridge_points[t]
+            c, d = points[c], points[d]
+
+        if (x3 <= x0 <= x4 or x4 <= x0 <= x3) and (y3 <= y0 <= y4 or y4 <= y0 <= y3):
+            ans.append([x0, y0])
+            rads.append(min(radius([x0, y0], qa), radius([x0, y0], qb), radius([x0, y0], pa), radius([x0, y0], pb),
+                            radius([x0, y0], c), radius([x0, y0], d)))
+
+
+    def find_centers_edges():
+        ans = []
+        rads = []
+        ridge_vertices = voronoi.ridge_vertices
+        for j in range(chl):
+            qa = points[ch[j]]
+            qb = points[ch[(j + 1) % chl]]
+            for i in range(len(ridge_vertices)):
+                v = ridge_vertices[i][0]
+                w = ridge_vertices[i][1]
+
+                if v != -1 and w != -1:
+                    if is_in_ch(vertices[v]) != is_in_ch(vertices[w]):
+                        find_intersections(vertices[v], vertices[w], qa, qb, ans, rads)
+                elif v == -1 and is_in_ch(vertices[w]): # find second point by projection it on its Voronoi edge
+                    [a, b] = voronoi.ridge_points[i]
+                    a, b = points[a], points[b]
+                    u = project_point(vertices[w], a, b)
+                    if (qa[0] <= u[0] <= qb[0] or qb[0] <= u[0] <= qa[0]) and (qa[1] <= u[1] <= qb[1] or qb[1] <= u[1] <= qa[1]):
+                        ans.append(u)
+                        rads.append(min(radius(u, qa), radius(u, qb)))
+                elif w == -1 and is_in_ch(vertices[v]):
+                    [a, b] = voronoi.ridge_points[i]
+                    a, b = points[a], points[b]
+                    u = project_point(vertices[v], a, b)
+                    if (qa[0] <= u[0] <= qb[0] or qb[0] <= u[0] <= qa[0]) and (qa[1] <= u[1] <= qb[1] or qb[1] <= u[1] <= qa[1]):
+                        ans.append(u)
+                        rads.append(min(radius(u, qa), radius(u, qb)))
+
+
+        return [rads, ans]
+
+
+    [rads, ans] = find_centers_vertex()
+    [rads_e, ans_e] = find_centers_edges()
+    rads += rads_e
+    ans += ans_e
+    print(rads)
+    print("ans ", ans)
     if len(rads) == 0:
-        print("didnt find")
-        exit()
+        print("didn't find")
+        return [[[0,0]], 0]
+
     # drawing
-    #voronoi_plot_2d(voronoi)
     i = 0
     for point in points:
         plt.plot(point[0], point[1], marker='o')
@@ -303,6 +321,5 @@ def solve(points):
             plt.plot([p[0], q[0]], [p[1], q[1]], marker='o')
         plt.gca().add_patch(circle)
     plt.plot()
+    return [centres, max_rad]
 
-
-points = []
