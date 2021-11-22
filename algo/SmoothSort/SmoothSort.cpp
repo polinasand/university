@@ -1,7 +1,7 @@
 #include "SmoothSort.h"
 
 #include <iostream>
-int max_val=20;
+int max_val=1000;
 
 
 SmoothSort::SmoothSort() {
